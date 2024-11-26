@@ -88,35 +88,38 @@
 //   }
 // }
 
-import { fetchMonitorGroupData } from '../../../../../services/uptrendsService';
 
-export async function GET(req, { params }) {
-  const { groupId } = params;
 
-  if (!groupId) {
-    return new Response(
-      JSON.stringify({ error: 'Monitor Group ID is required' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
+// src/app/api/uptrends/monitor-groups/[groupId]/route.js
+// import { fetchMonitorGroupData } from '../../../../../services/uptrendsService';
 
-  const { Sorting = 'Descending', Take = 100, PresetPeriod = 'Last24Hours' } = Object.fromEntries(req.nextUrl.searchParams);
+// export async function GET(req, { params }) {
+//   const { groupId } = params;
 
-  try {
-    // Fetch monitor group data using the server-side service
-    const data = await fetchMonitorGroupData(groupId, { Sorting, Take, PresetPeriod });
-    return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  } catch (error) {
-    console.error(`Error fetching monitor group ${groupId}:`, error.message);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
-}
+//   if (!groupId) {
+//     return new Response(
+//       JSON.stringify({ error: 'Monitor Group ID is required' }),
+//       { status: 400, headers: { 'Content-Type': 'application/json' } }
+//     );
+//   }
+
+//   const { Sorting = 'Descending', Take = 100, PresetPeriod = 'Last24Hours' } = Object.fromEntries(req.nextUrl.searchParams);
+
+//   try {
+//     // Fetch monitor group data using the server-side service
+//     const data = await fetchMonitorGroupData(groupId, { Sorting, Take, PresetPeriod });
+//     return new Response(JSON.stringify(data), {
+//       status: 200,
+//       headers: { 'Content-Type': 'application/json' },
+//     });
+//   } catch (error) {
+//     console.error(`Error fetching monitor group ${groupId}:`, error.message);
+//     return new Response(
+//       JSON.stringify({ error: error.message }),
+//       { status: 500, headers: { 'Content-Type': 'application/json' } }
+//     );
+//   }
+// }
 // import { fetchMonitorGroupData } from '../../../../../services/uptrendsService';
 
 // export async function GET(req, context) {
@@ -188,3 +191,117 @@ export async function GET(req, { params }) {
 //     );
 //   }
 // }
+// import { fetchMonitorGroupData } from '../../../../../services/uptrendsService';
+
+// export async function GET(req, context) {
+//   const { params } = await context; // Destructure params from context
+//   const groupId = params ? params.groupId : null; // Safely extract groupId
+
+//   if (!groupId) {
+//     return new Response(
+//       JSON.stringify({ error: 'Monitor Group ID is required' }),
+//       { status: 400, headers: { 'Content-Type': 'application/json' } }
+//     );
+//   }
+
+//   // Extract query parameters
+//   const { Sorting = 'Descending', Take = 100, PresetPeriod = 'Last24Hours' } = Object.fromEntries(req.nextUrl.searchParams);
+
+//   try {
+//     // Fetch monitor group data using the service
+//     const data = await fetchMonitorGroupData(groupId, { Sorting, Take, PresetPeriod });
+
+//     // Return successful response
+//     return new Response(JSON.stringify(data), {
+//       status: 200,
+//       headers: { 'Content-Type': 'application/json' },
+//     });
+//   } catch (error) {
+//     console.error(`Error fetching monitor group ${groupId}:`, error.message);
+
+//     // Return error response
+//     return new Response(
+//       JSON.stringify({ error: error.message }),
+//       { status: 500, headers: { 'Content-Type': 'application/json' } }
+//     );
+//   }
+// }
+// import { fetchMonitorGroupData } from '../../../../../services/uptrendsService';
+
+// export async function GET(req, context) {
+//   const { params } = context;
+
+//   // Await params to handle async dynamic routes
+//   const { groupId } = await params;
+
+//   if (!groupId) {
+//     return new Response(
+//       JSON.stringify({ error: 'Monitor Group ID is required' }),
+//       { status: 400, headers: { 'Content-Type': 'application/json' } }
+//     );
+//   }
+
+//   // Extract query parameters from the request
+//   const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+//   const { Sorting = 'Descending', Take = 100, PresetPeriod = 'Last24Hours' } = searchParams;
+
+//   try {
+//     // Call the service function to fetch monitor group data
+//     const data = await fetchMonitorGroupData(groupId, { Sorting, Take, PresetPeriod });
+
+//     // Return the data as a response
+//     return new Response(JSON.stringify(data), {
+//       status: 200,
+//       headers: { 'Content-Type': 'application/json' },
+//     });
+//   } catch (error) {
+//     console.error(`Error fetching monitor group ${groupId}:`, error.message);
+
+//     // Return an error response
+//     return new Response(
+//       JSON.stringify({ error: error.message }),
+//       { status: 500, headers: { 'Content-Type': 'application/json' } }
+//     );
+//   }
+// }
+import { fetchMonitorGroupData } from '../../../../../services/uptrendsService';
+
+export async function GET(req, context) {
+  try {
+    // Destructure `params` from the context and ensure it's resolved
+    const { params } = context;
+    const { groupId } = await params || {};
+
+    if (!groupId) {
+      return new Response(
+        JSON.stringify({ error: 'Monitor Group ID is required' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Extract and parse query parameters
+    const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+    const {
+      Sorting = 'Descending',
+      Take = 100,
+      PresetPeriod = 'Last24Hours',
+    } = searchParams;
+
+    // Call the service function to fetch monitor group data
+    const data = await fetchMonitorGroupData(groupId, { Sorting, Take, PresetPeriod });
+
+    // Return the fetched data as a JSON response
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error(`Error fetching monitor group data:`, error.message);
+
+    // Return an error response
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+}
