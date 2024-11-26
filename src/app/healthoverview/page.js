@@ -1,22 +1,72 @@
-import React from 'react';
+// import { useEffect, useState } from "react";
 
-export default async function HealthOverview() {
-  // Fetch data directly in the component
-  const res = await fetch('https://your-vcenter-api-endpoint/vms');
-  const vmData = await res.json();
+// const MonitorGroupsStatus = () => {
+//   const [monitorGroups, setMonitorGroups] = useState([]);
+//   const [groupStatuses, setGroupStatuses] = useState({});
+//   const [loading, setLoading] = useState(true);
 
-  return (
-    <div>
-      <h1>VM Health Overview</h1>
-      <ul>
-        {vmData.map(vm => (
-          <li key={vm.id}>
-            <p>{vm.name}</p>
-            <p>Status: {vm.power_state}</p>
-            <p>CPU Usage: {vm.cpu_usage}%</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+//   useEffect(() => {
+//     const fetchMonitorGroups = async () => {
+//       try {
+//         // Fetch monitor groups
+//         const resGroups = await fetch("/api/uptrends/monitor-groups");
+//         const groups = await resGroups.json();
+//         setMonitorGroups(groups);
+
+//         // Fetch monitor checks for each group
+//         const statuses = {};
+//         await Promise.all(
+//           groups.map(async (group) => {
+//             const resChecks = await fetch(
+//               `/api/uptrends/monitor-groups/${group.MonitorGroupGuid}`
+//             );
+//             const checks = await resChecks.json();
+
+//             // Determine group status based on checks
+//             const isError = checks.Data.some(
+//               (check) => check.Attributes.ErrorLevel !== "NoError"
+//             );
+//             statuses[group.MonitorGroupGuid] = isError ? "Error" : "OK";
+//           })
+//         );
+
+//         setGroupStatuses(statuses);
+//         setLoading(false);
+//       } catch (error) {
+//         console.error("Error fetching monitor data:", error);
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchMonitorGroups();
+//   }, []);
+
+//   if (loading) {
+//     return <div>Loading...</div>;
+//   }
+
+//   return (
+//     <div>
+//       <h1>Monitor Group Status</h1>
+//       <table border="1">
+//         <thead>
+//           <tr>
+//             <th>Group Description</th>
+//             <th>Status</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           {monitorGroups.map((group) => (
+//             <tr key={group.MonitorGroupGuid}>
+//               <td>{group.Description}</td>
+//               <td>{groupStatuses[group.MonitorGroupGuid]}</td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+//     </div>
+//   );
+// };
+
+// export default MonitorGroupsStatus;
+
