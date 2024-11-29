@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import MonitorDetails from './MonitorDetails';
+import MonitorDetails from '../../../components/MonitorDetails';
 
 const MonitorList = () => {
   const [monitors, setMonitors] = useState([]);
