@@ -26,7 +26,7 @@ export const fetchMonitorGroupsAndStatuses = async () => {
           })
         );
 
-        return { groupId: group.id, monitorStatuses };
+        return { monitorGroupGuid: group.id, monitorStatuses };
       })
     );
 

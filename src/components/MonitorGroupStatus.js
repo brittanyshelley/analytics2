@@ -3,7 +3,7 @@
 
 // import React, { useState, useEffect } from 'react';
 
-// const MonitorGroupStatus = ({ groupIds }) => {
+// const MonitorGroupStatus = ({ monitorGroupGuids }) => {
 //   const [statuses, setStatuses] = useState({});
 //   const [loading, setLoading] = useState(true);
 //   const [error, setError] = useState(null);
@@ -13,18 +13,18 @@
 //       setLoading(true);
 //       try {
 //         const results = await Promise.all(
-//           groupIds.map(async (groupId) => {
-//             const response = await fetch(`/api/uptrends/monitor-groups/${groupId}`);
+//           monitorGroupGuids.map(async (monitorGroupGuid) => {
+//             const response = await fetch(`/api/uptrends/monitor-groups/${monitorGroupGuid}`);
 //             if (!response.ok) {
-//               throw new Error(`Failed to fetch data for group ${groupId}`);
+//               throw new Error(`Failed to fetch data for group ${monitorGroupGuid}`);
 //             }
 //             const data = await response.json();
-//             return { groupId, data };
+//             return { monitorGroupGuid, data };
 //           })
 //         );
 
 //         const statusMap = results.reduce((acc, curr) => {
-//           acc[curr.groupId] = curr.data;
+//           acc[curr.monitorGroupGuid] = curr.data;
 //           return acc;
 //         }, {});
 //         setStatuses(statusMap);
@@ -36,7 +36,7 @@
 //     };
 
 //     fetchStatuses();
-//   }, [groupIds]);
+//   }, [monitorGroupGuids]);
 
 //   if (loading) return <p>Loading statuses...</p>;
 //   if (error) return <p>Error: {error}</p>;
@@ -44,9 +44,9 @@
 //   return (
 //     <div>
 //       <h2>Monitor Group Statuses</h2>
-//       {Object.entries(statuses).map(([groupId, data]) => (
-//         <div key={groupId}>
-//           <h3>Group ID: {groupId}</h3>
+//       {Object.entries(statuses).map(([monitorGroupGuid, data]) => (
+//         <div key={monitorGroupGuid}>
+//           <h3>Group ID: {monitorGroupGuid}</h3>
 //           <pre>{JSON.stringify(data, null, 2)}</pre>
 //         </div>
 //       ))}
@@ -60,7 +60,7 @@
 
 // import React, { useState, useEffect } from 'react';
 
-// const MonitorGroupStatus = ({ groupIds }) => {
+// const MonitorGroupStatus = ({ monitorGroupGuids }) => {
 //   const [statuses, setStatuses] = useState({});
 //   const [loading, setLoading] = useState(true);
 //   const [error, setError] = useState(null);
@@ -70,18 +70,18 @@
 //       setLoading(true);
 //       try {
 //         const results = await Promise.all(
-//           groupIds.map(async (groupId) => {
-//             const response = await fetch(`/api/uptrends/monitor-groups/${groupId}`);
+//           monitorGroupGuids.map(async (monitorGroupGuid) => {
+//             const response = await fetch(`/api/uptrends/monitor-groups/${monitorGroupGuid}`);
 //             if (!response.ok) {
-//               throw new Error(`Failed to fetch data for group ${groupId}`);
+//               throw new Error(`Failed to fetch data for group ${monitorGroupGuid}`);
 //             }
 //             const data = await response.json();
-//             return { groupId, data };
+//             return { monitorGroupGuid, data };
 //           })
 //         );
 
 //         const statusMap = results.reduce((acc, curr) => {
-//           acc[curr.groupId] = curr.data;
+//           acc[curr.monitorGroupGuid] = curr.data;
 //           return acc;
 //         }, {});
 //         setStatuses(statusMap);
@@ -93,7 +93,7 @@
 //     };
 
 //     fetchStatuses();
-//   }, [groupIds]);
+//   }, [monitorGroupGuids]);
 
 //   if (loading) return <p>Loading statuses...</p>;
 //   if (error) return <p>Error: {error}</p>;
@@ -101,9 +101,9 @@
 //   return (
 //     <div>
 //       <h2>Monitor Group Statuses</h2>
-//       {Object.entries(statuses).map(([groupId, data]) => (
-//         <div key={groupId}>
-//           <h3>Group ID: {groupId}</h3>
+//       {Object.entries(statuses).map(([monitorGroupGuid, data]) => (
+//         <div key={monitorGroupGuid}>
+//           <h3>Group ID: {monitorGroupGuid}</h3>
 //           <pre>{JSON.stringify(data, null, 2)}</pre>
 //         </div>
 //       ))}
@@ -160,9 +160,9 @@
 //   return (
 //     <div>
 //       <h2>Monitor Group Statuses</h2>
-//       {Object.entries(statuses).map(([groupId, { name, data }]) => (
-//         <div key={groupId} className="monitor-group">
-//           <h3>{name} (ID: {groupId})</h3>
+//       {Object.entries(statuses).map(([monitorGroupGuid, { name, data }]) => (
+//         <div key={monitorGroupGuid} className="monitor-group">
+//           <h3>{name} (ID: {monitorGroupGuid})</h3>
 //           <pre>{JSON.stringify(data, null, 2)}</pre>
 //         </div>
 //       ))}
@@ -307,7 +307,7 @@ const MonitorGroupStatus = () => {
       try {
         const monitorGroupStatuses = await fetchMonitorGroupsAndStatuses();
         const statusMap = monitorGroupStatuses.reduce((acc, curr) => {
-          acc[curr.groupId] = curr.monitorStatuses;
+          acc[curr.monitorGroupGuid] = curr.monitorStatuses;
           return acc;
         }, {});
         setStatuses(statusMap);
@@ -327,9 +327,9 @@ const MonitorGroupStatus = () => {
   return (
     <div>
       <h2>Monitor Group Statuses</h2>
-      {Object.entries(statuses).map(([groupId, monitorStatuses]) => (
-        <div key={groupId}>
-          <h3>Group ID: {groupId}</h3>
+      {Object.entries(statuses).map(([monitorGroupGuid, monitorStatuses]) => (
+        <div key={monitorGroupGuid}>
+          <h3>Group ID: {monitorGroupGuid}</h3>
           {monitorStatuses.map(({ monitorId, status }) => (
             <div key={monitorId}>
               <h4>Monitor ID: {monitorId}</h4>

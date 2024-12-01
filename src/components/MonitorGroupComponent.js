@@ -4,20 +4,20 @@
 import React, { useState, useEffect } from 'react';
 import { fetchMonitorChecksAndCategorize } from '../services/uptrendsService';
 
-const MonitorGroupComponent = ({ groupId }) => {
+const MonitorGroupComponent = ({ monitorGroupGuid }) => {
   const [monitorData, setMonitorData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const getMonitorData = async () => {
-      if (!groupId) {
+      if (!monitorGroupGuid) {
         setError('Group ID is required');
         setLoading(false);
         return;
       }
       try {
-        const data = await fetchMonitorChecksAndCategorize(groupId);
+        const data = await fetchMonitorChecksAndCategorize(monitorGroupGuid);
         setMonitorData(data);
       } catch (err) {
         setError(err.message);
@@ -27,7 +27,7 @@ const MonitorGroupComponent = ({ groupId }) => {
     };
 
     getMonitorData();
-  }, [groupId]);
+  }, [monitorGroupGuid]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;

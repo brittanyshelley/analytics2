@@ -29,8 +29,8 @@
 // };
 
 
-// export const fetchMonitorGroupData = async (groupId, params = {}) => {
-//   if (!groupId) {
+// export const fetchMonitorGroupChecks = async (monitorGroupGuid, params = {}) => {
+//   if (!monitorGroupGuid) {
 //     throw new Error('Group ID is required to fetch monitor group data.');
 //   }
 
@@ -39,19 +39,19 @@
 
 //   try {
 //     // Construct the full API URL with query parameters
-//     const apiUrl = `/MonitorCheck/MonitorGroup/${groupId}?${queryParams}`;
+//     const apiUrl = `/MonitorCheck/MonitorGroup/${monitorGroupGuid}?${queryParams}`;
 
 //     // Fetch data from the Uptrends API
 //     const response = await apiClient.get(apiUrl);
 
-//     console.log(`Monitor group data fetched for group ${groupId}:`, response.data);
+//     console.log(`Monitor group data fetched for group ${monitorGroupGuid}:`, response.data);
 
 //     // Return the data to the caller
 //     return response.data;
 //   } catch (error) {
 //     // Log and rethrow the error for higher-level handling
 //     const errorMessage = error.response?.data || error.message || 'Unknown error occurred';
-//     console.error(`Error fetching monitor group data for group ${groupId}:`, errorMessage);
+//     console.error(`Error fetching monitor group data for group ${monitorGroupGuid}:`, errorMessage);
 //     throw new Error(errorMessage);
 //   }
 // };
@@ -138,24 +138,39 @@ export const fetchMonitorGroup = async () => {
 /**
  * Fetches monitor group members for a given group ID.
  */
-export const fetchMonitorGroupMembers = async (groupId) => {
-  if (!groupId) {
-    throw new Error('Group ID is required to fetch monitor group members.');
+// export const fetchMonitorGroupMembers = async (monitorGrouGuid) => {
+//   if (!monitorGrouGuid) {
+//     throw new Error('Group ID is required to fetch monitor group members.');
+//   }
+
+//   try {
+//     const response = await apiClient.get(`/MonitorGroup/${monitorGrouGuid}/Member`);
+//     console.log(`Monitor group members fetched for group ${monitorGrouGuid}:`, response.data);
+//     return response.data;
+//   } catch (error) {
+//     console.error(`Error fetching monitor group members for group ${monitorGrouGuid}:`, error.message);
+//     throw error;
+//   }
+// };
+
+export const fetchMonitorGroupMembers = async (monitorGroupGuid) => {
+  if (!monitorGroupGuid) {
+    throw new Error('Group GUID is required to fetch monitor group members.');
   }
 
   try {
-    const response = await apiClient.get(`/MonitorGroup/${groupId}/Member`);
-    console.log(`Monitor group members fetched for group ${groupId}:`, response.data);
+    const response = await apiClient.get(`/MonitorGroup/${monitorGroupGuid}/Member`);
+    console.log(`Monitor group members fetched for group ${monitorGroupGuid}:`, response.data);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching monitor group members for group ${groupId}:`, error.message);
+    console.error(`Error fetching monitor group members for group ${monitorGroupGuid}:`, error.message);
     throw error;
   }
 };
 
-export const fetchMonitorChecksAndCategorize = async (groupId) => {
+export const fetchMonitorChecksAndCategorize = async (monitorGroupGuid) => {
   try {
-    const members = await fetchMonitorGroupMembers(groupId);
+    const members = await fetchMonitorGroupMembers(monitorGroupGuid);
 
     const monitorStatuses = await Promise.all(
       members.map(async (member) => {
@@ -169,23 +184,23 @@ export const fetchMonitorChecksAndCategorize = async (groupId) => {
 
     // Categorize the monitor statuses into their respective groups
     const categorizedStatuses = monitorStatuses.reduce((acc, curr) => {
-      const groupId = curr.status.groupId;
-      if (!acc[groupId]) {
-        acc[groupId] = [];
+      const monitorGroupGuid = curr.status.monitorGroupGuid;
+      if (!acc[monitorGroupGuid]) {
+        acc[monitorGroupGuid] = [];
       }
-      acc[groupId].push(curr);
+      acc[monitorGroupGuid].push(curr);
       return acc;
     }, {});
 
     return categorizedStatuses;
   } catch (error) {
-    console.error(`Error fetching monitor checks and categorizing for group ${groupId}:`, error.message);
+    console.error(`Error fetching monitor checks and categorizing for group ${monitorGroupGuid}:`, error.message);
     throw error;
   }
 };
 
-export const fetchMonitorGroupData = async (groupId, params = {}) => {
-  if (!groupId) {
+export const fetchMonitorGroupChecks = async (monitorGroupGuid, params = {}) => {
+  if (!monitorGroupGuid) {
     throw new Error('Group ID is required to fetch monitor group data.');
   }
 
@@ -194,19 +209,19 @@ export const fetchMonitorGroupData = async (groupId, params = {}) => {
 
   try {
     // Construct the full API URL with query parameters
-    const apiUrl = `/MonitorCheck/MonitorGroup/${groupId}?${queryParams}`;
+    const apiUrl = `/MonitorCheck/MonitorGroup/${monitorGroupGuid}?${queryParams}`;
 
     // Fetch data from the Uptrends API
     const response = await apiClient.get(apiUrl);
 
-    console.log(`Monitor group data fetched for group ${groupId}:`, response.data);
+    console.log(`Monitor group data fetched for group ${monitorGroupGuid}:`, response.data);
 
     // Return the data to the caller
     return response.data;
   } catch (error) {
     // Log and rethrow the error for higher-level handling
     const errorMessage = error.response?.data || error.message || 'Unknown error occurred';
-    console.error(`Error fetching monitor group data for group ${groupId}:`, errorMessage);
+    console.error(`Error fetching monitor group data for group ${monitorGroupGuid}:`, errorMessage);
     throw new Error(errorMessage);
   }
 };
@@ -235,7 +250,7 @@ export const fetchMonitorGroupsAndStatuses = async () => {
           })
         );
 
-        return { groupId: group.id, monitorStatuses };
+        return { monitorGroupGuid: group.id, monitorStatuses };
       })
     );
 

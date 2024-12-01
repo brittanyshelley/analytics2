@@ -1,13 +1,13 @@
 
-import { fetchMonitorGroupData } from '../../../../../services/uptrendsService';
+import { fetchMonitorGroupChecks } from '../../../../../services/uptrendsService';
 
 export async function GET(req, context) {
   try {
     // Destructure `params` from the context and ensure it's resolved
     const { params } = context;
-    const { groupId } = await params || {};
+    const { monitorGroupGuid } = await params || {};
 
-    if (!groupId) {
+    if (!monitorGroupGuid) {
       return new Response(
         JSON.stringify({ error: 'Monitor Group ID is required' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
@@ -23,7 +23,7 @@ export async function GET(req, context) {
     } = searchParams;
 
     // Call the service function to fetch monitor group data
-    const data = await fetchMonitorGroupData(groupId, { Sorting, Take, PresetPeriod });
+    const data = await fetchMonitorGroupChecks(monitorGroupGuid, { Sorting, Take, PresetPeriod });
 
     // Return the fetched data as a JSON response
     return new Response(JSON.stringify(data), {
