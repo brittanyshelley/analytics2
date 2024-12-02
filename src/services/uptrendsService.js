@@ -26,23 +26,8 @@ export const fetchMonitorGroup = async () => {
   }
 };
 
-/**
- * Fetches monitor group members for a given group ID.
- */
-// export const fetchMonitorGroupMembers = async (monitorGrouGuid) => {
-//   if (!monitorGrouGuid) {
-//     throw new Error('Group ID is required to fetch monitor group members.');
-//   }
+// Fetches monitor group members for a given group ID.
 
-//   try {
-//     const response = await apiClient.get(`/MonitorGroup/${monitorGrouGuid}/Member`);
-//     console.log(`Monitor group members fetched for group ${monitorGrouGuid}:`, response.data);
-//     return response.data;
-//   } catch (error) {
-//     console.error(`Error fetching monitor group members for group ${monitorGrouGuid}:`, error.message);
-//     throw error;
-//   }
-// };
 
 export const fetchMonitorGroupMembers = async (monitorGroupGuid) => {
   if (!monitorGroupGuid) {
@@ -59,20 +44,6 @@ export const fetchMonitorGroupMembers = async (monitorGroupGuid) => {
   }
 };
 
-// export const fetchMonitorDetails = async (monitorGuid) => {
-//   if (!monitorGuid) {
-//     throw new Error('Monitor GUID is required to fetch monitor details.');
-//   }
-
-//   try {
-//     const response = await apiClient.get(`/Monitor/${monitorGuid}`);
-//     console.log('Monitor details fetched:', response.data);
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error fetching monitor details:', error.message);
-//     throw error;
-//   }
-// };
 
 //Fetch Monitor details by monitorGuid
 export const fetchMonitorDetails = async (monitorGuid) => {
