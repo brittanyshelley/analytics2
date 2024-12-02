@@ -70,3 +70,28 @@
 
 // export default MonitorGroupsStatus;
 
+'use client';
+
+import { useApplicationData } from '@/hooks/useApplicationData';
+
+export default function Dashboard() {
+  const { monitorGroups, monitors, loading } = useApplicationData();
+
+  if (loading) return <p>Loading dashboard...</p>;
+
+  return (
+    <div>
+      <h1>Monitor Dashboard</h1>
+      {monitorGroups.map((group) => (
+        <div key={group.MonitorGroupGuid}>
+          <h2>{group.Name}</h2>
+          <ul>
+            {monitors[group.MonitorGroupGuid]?.map((monitor) => (
+              <li key={monitor.MonitorGuid}>{monitor.Name}</li>
+            )) || <p>No monitors in this group.</p>}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
