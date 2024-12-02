@@ -171,6 +171,36 @@ export const fetchMonitorGroupMembers = async (monitorGroupGuid) => {
   }
 };
 
+export const fetchMonitorDetails = async (monitorGuid) => {
+  if (!monitorGuid) {
+    throw new Error('Monitor GUID is required to fetch monitor details.');
+  }
+
+  try {
+    const response = await apiClient.get(`/Monitor/${monitorGuid}`);
+    console.log('Monitor details fetched:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching monitor details:', error.message);
+    throw error;
+  }
+};
+
+export const fetchMonitorGroupMonitors = async (monitorGroupGuid) => {
+  if (!monitorGroupGuid) {
+    throw new Error('Group GUID is required to fetch monitor group members.');
+  }
+
+  try {
+    const response = await apiClient.get(`/Monitor/MonitorGroup/${monitorGroupGuid}`);
+    console.log('MonitorGroup fetched:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching monitors:', error.message);
+    throw error;
+  }
+};
+
 export const fetchMonitorChecksAndCategorize = async (monitorGroupGuid) => {
   try {
     const members = await fetchMonitorGroupMembers(monitorGroupGuid);

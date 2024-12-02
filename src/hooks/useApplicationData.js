@@ -243,7 +243,7 @@ export function useApplicationDataProvider() {
             // Fetch monitors for each MonitorGuid
             const monitors = await Promise.all(
               memberData.map(async (member) => {
-                const res = await fetch(`/api/uptrends/monitors/${member.MonitorGuid}`);
+                const res = await fetch(`/api/uptrends/Monitor/${member.MonitorGuid}`);
                 const monitorData = await res.json();
                 console.log(`Monitor Data for MonitorGuid ${member.MonitorGuid}:`, monitorData);
                 return monitorData;
