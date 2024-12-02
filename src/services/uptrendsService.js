@@ -108,6 +108,9 @@
 //     throw error;
 //   }
 // };
+
+
+//uptrendsService.js
 import createUptrendsApiClient from './uptrendsApiClient';
 
 const apiClient = createUptrendsApiClient(); // Create a single instance for reuse

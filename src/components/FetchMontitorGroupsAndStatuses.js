@@ -5,13 +5,13 @@ const apiClient = createUptrendsApiClient();
 export const fetchMonitorGroupsAndStatuses = async () => {
   try {
     // Step 1: Fetch all monitor groups
-    const monitorGroupsResponse = await apiClient.get('/MonitorGroup');
+    const monitorGroupsResponse = await apiClient.get('/MonitorGroupGuid');
     const monitorGroups = monitorGroupsResponse.data;
 
     // Step 2: For each monitor group, fetch monitorGuids
     const monitorGroupStatuses = await Promise.all(
       monitorGroups.map(async (group) => {
-        const monitorGroupDataResponse = await apiClient.get(`/MonitorCheck/MonitorGroup/${group.id}`, {
+        const monitorGroupDataResponse = await apiClient.get(`/MonitorCheck/MonitorGroupGuid/${group.id}`, {
           params: { PresetPeriod: 'Last24Hours' }
         });
         const monitorGroupData = monitorGroupDataResponse.data;
@@ -19,7 +19,7 @@ export const fetchMonitorGroupsAndStatuses = async () => {
         // Step 3: Check the status of each monitorGuid for the last 24 hours
         const monitorStatuses = await Promise.all(
           monitorGroupData.map(async (monitor) => {
-            const monitorStatusResponse = await apiClient.get(`/MonitorCheck/Monitor/${monitor.id}`, {
+            const monitorStatusResponse = await apiClient.get(`/MonitorCheck/MonitorGuid/${monitor.id}`, {
               params: { PresetPeriod: 'Last24Hours' }
             });
             return { monitorId: monitor.id, status: monitorStatusResponse.data };

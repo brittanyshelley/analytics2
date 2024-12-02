@@ -3,7 +3,7 @@
 import { fetchMonitorGroupMembers } from '../../../../../../services/uptrendsService';
 
 export async function GET(req, { params }) {
-  const { monitorGroupGuid } = params;
+  const { monitorGroupGuid } = await params;
 
   if (!monitorGroupGuid) {
     return new Response(
