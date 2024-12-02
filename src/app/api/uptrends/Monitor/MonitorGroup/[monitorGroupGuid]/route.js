@@ -4,7 +4,7 @@ import { fetchMonitorGroupMonitors } from '../../../../../../services/uptrendsSe
 
 
 export async function GET(req, { params }) {
-  const { monitorGroupGuid } = params; // Extract the dynamic monitorGroupGuid from params
+  const { monitorGroupGuid } = await params; // Extract the dynamic monitorGroupGuid from params
 
   if (!monitorGroupGuid) {
     return new Response(
@@ -22,7 +22,7 @@ export async function GET(req, { params }) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error(`Error fetching monitor group data for GUID ${monitorGroupGuid}:`, error.message);
+    console.error(`Error fetching monitor group data for GUID ${params?.monitorGuid || 'unknown'}:`, error.message);
 
     return new Response(
       JSON.stringify({ error: 'Failed to fetch monitor group data' }),

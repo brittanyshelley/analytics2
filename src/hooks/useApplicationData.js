@@ -295,6 +295,10 @@ export function useApplicationDataProvider() {
     };
   }, []);
 
+  console.log('monitorGroups:', monitorGroups);
+  console.log('monitors:', monitors);
+  console.log('loading:', loading);
+
   return {
     monitorGroups, // Return monitorGroups state
     monitors, // Return monitors state
