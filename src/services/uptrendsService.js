@@ -221,3 +221,32 @@ export const fetchOperatorDetails = async (operatorGuid) => {
     throw error;
   }
 };
+
+
+const linkDataByMonitorGuid = (details, checks) => {
+  return details.map(detail => {
+    const relatedChecks = checks.filter(check => check.Attributes.MonitorGuid === detail.MonitorGuid);
+    return {
+      ...detail,
+      MonitorChecks: relatedChecks
+    };
+  });
+};
+
+export const fetchAndLinkMonitorData = async (monitorGroupGuid) => {
+  try {
+    // Fetch monitor group members
+    const members = await apiClient.get(`/MonitorGroup/${monitorGroupGuid}/Member`);
+
+    // Fetch monitor checks
+    const checks = await apiClient.get(`/MonitorCheck/MonitorGroup/${monitorGroupGuid}`);
+
+    // Link the data by MonitorGuid
+    const linkedData = linkDataByMonitorGuid(members.data, checks.data);
+
+    return linkedData;
+  } catch (error) {
+    console.error('Error fetching and linking monitor data:', error.message);
+    throw error;
+  }
+};

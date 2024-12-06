@@ -5,7 +5,7 @@ import Dropdown from './Dropdown';
 import DataTable from './DataTable';
 
 const GroupStatus = () => {
-  const [dataType, setDataType] = useState('monitors'); // Default to monitors
+  const [dataType, setDataType] = useState('Monitor'); // Default to monitors
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);

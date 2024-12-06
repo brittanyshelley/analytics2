@@ -1,3 +1,4 @@
+// src\services\uptrendsApiClient.js
 import axios from 'axios';
 
 // Create a specialized Axios instance for Uptrends

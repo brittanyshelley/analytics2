@@ -1,4 +1,4 @@
-
+//app/api/uptrends/monitor-groups/[monitorGroupGuid]/route.js
 import { fetchMonitorGroupChecks } from '../../../../../services/uptrendsService';
 
 export async function GET(req, context) {
