@@ -108,30 +108,19 @@ export const fetchMonitorChecksAndCategorize = async (monitorGroupGuid) => {
   }
 };
 
+
 export const fetchMonitorGroupChecks = async (monitorGroupGuid, params = {}) => {
   if (!monitorGroupGuid) {
-    throw new Error('Group ID is required to fetch monitor group data.');
+    throw new Error('monitorGroupGuid is required.');
   }
-
-  // Build query parameters dynamically
-  const queryParams = new URLSearchParams(params).toString();
-
   try {
-    // Construct the full API URL with query parameters
-    const apiUrl = `/MonitorCheck/MonitorGroup/${monitorGroupGuid}?${queryParams}`;
-
-    // Fetch data from the Uptrends API
-    const response = await apiClient.get(apiUrl);
-
-    console.log(`Monitor group data fetched for group ${monitorGroupGuid}:`, response.data);
-
-    // Return the data to the caller
+    const queryParams = new URLSearchParams(params).toString();
+    const response = await apiClient.get(`/MonitorCheck/MonitorGroup/${monitorGroupGuid}?${queryParams}`);
+    console.log(`Fetched monitor checks for group ${monitorGroupGuid}:`, response.data);
     return response.data;
   } catch (error) {
-    // Log and rethrow the error for higher-level handling
-    const errorMessage = error.response?.data || error.message || 'Unknown error occurred';
-    console.error(`Error fetching monitor group data for group ${monitorGroupGuid}:`, errorMessage);
-    throw new Error(errorMessage);
+    console.error(`Error fetching monitor checks for group ${monitorGroupGuid}:`, error.message);
+    throw error;
   }
 };
 
@@ -223,30 +212,46 @@ export const fetchOperatorDetails = async (operatorGuid) => {
 };
 
 
-const linkDataByMonitorGuid = (details, checks) => {
-  return details.map(detail => {
-    const relatedChecks = checks.filter(check => check.Attributes.MonitorGuid === detail.MonitorGuid);
+
+export const linkDataByMonitorGuid = (monitors, checks) => {
+  console.log('Linking Data...');
+  console.log('Monitors:', monitors);
+  console.log('Checks:', checks);
+
+  return monitors.map((monitor) => {
+    const relatedChecks = checks.filter(
+      (check) => check.Attributes?.MonitorGuid === monitor.MonitorGuid
+    );
+    console.log(`Monitor: ${monitor.Name}, Related Checks:`, relatedChecks);
+
     return {
-      ...detail,
-      MonitorChecks: relatedChecks
+      ...monitor,
+      MonitorChecks: relatedChecks,
     };
   });
 };
 
+
 export const fetchAndLinkMonitorData = async (monitorGroupGuid) => {
   try {
+    console.log('Fetching data for MonitorGroupGuid:', monitorGroupGuid);
+
     // Fetch monitor group members
-    const members = await apiClient.get(`/MonitorGroup/${monitorGroupGuid}/Member`);
+    const membersResponse = await apiClient.get(`/MonitorGroup/${monitorGroupGuid}/Member`);
+    console.log('Members Response:', membersResponse.data);
 
     // Fetch monitor checks
-    const checks = await apiClient.get(`/MonitorCheck/MonitorGroup/${monitorGroupGuid}`);
+    const checksResponse = await apiClient.get(`/MonitorCheck/MonitorGroup/${monitorGroupGuid}`);
+    console.log('Checks Response:', checksResponse.data);
 
     // Link the data by MonitorGuid
-    const linkedData = linkDataByMonitorGuid(members.data, checks.data);
+    const linkedData = linkDataByMonitorGuid(membersResponse.data, checksResponse.data);
+
+    console.log('Linked Data:', linkedData);
 
     return linkedData;
   } catch (error) {
-    console.error('Error fetching and linking monitor data:', error.message);
+    console.error('Error fetching and linking monitor data:', error.response?.data || error.message);
     throw error;
   }
 };
