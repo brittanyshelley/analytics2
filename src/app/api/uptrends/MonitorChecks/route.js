@@ -25,7 +25,8 @@ export async function GET(req) {
     // Fetch monitor checks
     const monitorChecksResponse = await fetchMonitorGroupChecks(monitorGroupGuid, {
       Sorting: 'Descending',
-      Take: 100,
+      Take: 200,
+      PresetPeriod: 'Last1Hours',
     });
     console.log('Raw monitorChecks response:', monitorChecksResponse);
 

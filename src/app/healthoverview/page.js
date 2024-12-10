@@ -71,24 +71,48 @@
 // export default MonitorGroupsStatus;
 
 'use client';
-
-import { useApplicationData } from '@/hooks/useApplicationData';
+import { useApplicationData } from '../../hooks/useApplicationData';
 
 export default function Dashboard() {
-  const { monitorGroups, monitors, loading } = useApplicationData();
+  const {
+    monitorGroups,
+    monitors,
+    monitorChecks,
+    loading,
+    updateMonitorGroups,
+    updateMonitorsByGroup,
+    updateMonitorChecks,
+  } = useApplicationData();
 
-  if (loading) return <p>Loading dashboard...</p>;
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div>
-      <h1>Monitor Dashboard</h1>
-      {monitorGroups.map((group) => (
-        <div key={group.MonitorGroupGuid}>
-          <h2>{group.Name}</h2>
+      <h1>Dashboard</h1>
+      {/* Display Monitor Groups */}
+      <h2>Monitor Groups</h2>
+      <ul>
+        {monitorGroups.map((group) => (
+          <li key={group.MonitorGroupGuid}>{group.Name}</li>
+        ))}
+      </ul>
+
+      {/* Display Monitors and Checks */}
+      <h2>Monitors</h2>
+      {Object.entries(monitors).map(([groupGuid, monitors]) => (
+        <div key={groupGuid}>
+          <h3>Group: {groupGuid}</h3>
           <ul>
-            {monitors[group.MonitorGroupGuid]?.map((monitor) => (
-              <li key={monitor.MonitorGuid}>{monitor.Name}</li>
-            )) || <p>No monitors in this group.</p>}
+            {monitors.map((monitor) => (
+              <li key={monitor.MonitorGuid}>
+                {monitor.Name}
+                <ul>
+                  {monitorChecks[monitor.MonitorGuid]?.map((check) => (
+                    <li key={check.CheckId}>{check.Description}</li>
+                  )) || <li>No checks available</li>}
+                </ul>
+              </li>
+            ))}
           </ul>
         </div>
       ))}

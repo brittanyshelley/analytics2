@@ -427,26 +427,88 @@ const GroupStatus2 = () => {
   }
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    //     <div>
+    //       <h1>Dashboard</h1>
+    //       <Dropdown
+    //         options={['Monitor', 'monitor-groups', 'metrics', 'alerts']}
+    //         selected={dataType}
+    //         onChange={setDataType}
+    //       />
+    //       {loading ? (
+    //         <div>Loading...</div>
+    //       ) : (
+    //         <div>
+    //           {dataType === 'monitor-groups' ? (
+    //             <div>
+    //               {data.map((group, index) => (
+    //                 <div key={index}>
+    //                   <h3>{group.Description} - {group.Status}</h3>
+    //                   <button onClick={() => {
+    //                     console.log('Selected group GUID:', group.MonitorGroupGuid);
+    //                     setSelectedGroupGuid(group.MonitorGroupGuid);
+    //                   }}>
+    //                     View Details
+    //                   </button>
+    //                 </div>
+    //               ))}
+
+    //               {selectedGroupGuid && (
+    //                 <MonitorDetails monitorGroupGuid={selectedGroupGuid} />
+    //               )}
+    //             </div>
+    //           ) : (
+    //             <div>
+    //               {/* Render other data types */}
+    //               {data.map((item, index) => (
+    //                 <div key={index}>{JSON.stringify(item)}</div>
+    //               ))}
+    //             </div>
+    //           )}
+    //         </div>
+    //       )}
+    //     </div>
+    //   );
+    // };
+
+    // export default GroupStatus2;
+
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
       <Dropdown
         options={['Monitor', 'monitor-groups', 'metrics', 'alerts']}
         selected={dataType}
         onChange={setDataType}
+        className="mb-4"
       />
       {loading ? (
-        <div>Loading...</div>
+        <div className="text-center text-gray-600">Loading...</div>
       ) : (
         <div>
           {dataType === 'monitor-groups' ? (
             <div>
               {data.map((group, index) => (
-                <div key={index}>
-                  <h3>{group.Description} - {group.Status}</h3>
-                  <button onClick={() => {
-                    console.log('Selected group GUID:', group.MonitorGroupGuid);
-                    setSelectedGroupGuid(group.MonitorGroupGuid);
-                  }}>
+                <div
+                  key={index}
+                  className="mb-4 p-4 bg-white shadow-md rounded-md"
+                >
+                  <h3 className="text-lg font-semibold text-gray-700">
+                    {group.Description} -{' '}
+                    <span
+                      className={`${group.Status === 'Active' || group.Status === 'OK'
+                        ? 'text-green-500'
+                        : 'text-red-500'
+                        }`}
+                    >
+                      {group.Status}
+                    </span>
+                  </h3>
+                  <button
+                    onClick={() => {
+                      console.log('Selected group GUID:', group.MonitorGroupGuid);
+                      setSelectedGroupGuid(group.MonitorGroupGuid);
+                    }}
+                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  >
                     View Details
                   </button>
                 </div>
@@ -460,7 +522,12 @@ const GroupStatus2 = () => {
             <div>
               {/* Render other data types */}
               {data.map((item, index) => (
-                <div key={index}>{JSON.stringify(item)}</div>
+                <div
+                  key={index}
+                  className="mb-2 p-4 bg-gray-50 border border-gray-300 rounded-md"
+                >
+                  {JSON.stringify(item)}
+                </div>
               ))}
             </div>
           )}

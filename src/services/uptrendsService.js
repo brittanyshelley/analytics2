@@ -255,3 +255,149 @@ export const fetchAndLinkMonitorData = async (monitorGroupGuid) => {
     throw error;
   }
 };
+
+
+// Fetch Monitor Checks by monitorGuid
+export const fetchMonitorChecks = async (monitorGuid, params = {}) => {
+  if (!monitorGuid) {
+    throw new Error('Monitor GUID is required to fetch monitor checks.');
+  }
+
+  try {
+    // Default parameters for the API call
+    const defaultParams = {
+      Sorting: 'Descending',
+      Take: 1,
+      PresetPeriod: 'Last2Hours',
+    };
+
+    // Merge default parameters with any additional ones provided
+    const queryParams = new URLSearchParams({ ...defaultParams, ...params }).toString();
+
+    // Make the API call
+    const response = await apiClient.get(`/MonitorCheck/Monitor/${monitorGuid}?${queryParams}`);
+    console.log(`Fetched checks for Monitor GUID ${monitorGuid}:`, response.data);
+
+    return response.data; // Return the fetched data
+  } catch (error) {
+    console.error(`Error fetching monitor checks for Monitor GUID ${monitorGuid}:`, error.message);
+    throw error;
+  }
+};
+
+// Function to find the most recent check for each monitor
+
+
+// const monitors = [
+//   {
+//     MonitorGuid: 'example-guid-1',
+//     Name: 'Example Monitor 1',
+//     MonitorChecks: [
+//       {
+//         Attributes: {
+//           Timestamp: '2024-12-08T21:19:10',
+//           ErrorDescription: 'OK',
+//           TotalTime: 100,
+//         },
+//       },
+//       {
+//         Attributes: {
+//           Timestamp: '2024-12-08T21:15:10',
+//           ErrorDescription: 'Timeout',
+//           TotalTime: 0,
+//         },
+//       },
+//     ],
+//   },
+//   {
+//     MonitorGuid: 'example-guid-2',
+//     Name: 'Example Monitor 2',
+//     MonitorChecks: [
+//       {
+//         Attributes: {
+//           Timestamp: '2024-12-08T21:20:10',
+//           ErrorDescription: 'OK',
+//           TotalTime: 50,
+//         },
+//       },
+//     ],
+//   },
+// ];
+// const recentChecks = getMostRecentChecks(monitors);
+// console.log(recentChecks);
+
+
+export function getMostRecentChecks(monitors) {
+  return monitors.map((monitor) => {
+    const { MonitorGuid, Name, MonitorChecks } = monitor;
+
+    // Find the most recent check by comparing timestamps
+    const mostRecentCheck = MonitorChecks.reduce((latest, current) => {
+      return new Date(current.Attributes.Timestamp) > new Date(latest.Attributes.Timestamp)
+        ? current
+        : latest;
+    });
+
+    return {
+      MonitorGuid,
+      Name,
+      MostRecentCheck: mostRecentCheck,
+    };
+  });
+}
+
+
+// console.log(recentChecks);
+// const recentChecks = getMostRecentChecks(monitors);
+
+
+
+// If you prefer the sort method (slightly less efficient for large datasets):
+
+
+
+// function getMostRecentChecks(monitorGuid) {
+//   const mostRecentChecks = monitors.map((monitor) => {
+//     const { MonitorGuid, Name, MonitorChecks } = monitor;
+
+//     // Find the most recent check by comparing timestamps
+//     const mostRecentCheck = MonitorChecks.reduce((latest, current) => {
+//       return new Date(current.Attributes.Timestamp) > new Date(latest.Attributes.Timestamp)
+//         ? current
+//         : latest;
+//     });
+
+//     return {
+//       MonitorGuid,
+//       Name,
+//       MostRecentCheck: mostRecentCheck,
+//     };
+//   });
+
+//   return mostRecentChecks;
+// }
+
+// // Call the function
+// const recentChecks = getMostRecentChecks(monitorGuid);
+
+// // Output the result
+// console.log(recentChecks);
+
+
+//sorting instead of reduce, you can sort the MonitorChecks array and take the first element
+// function getMostRecentChecks(monitors) {
+//   return monitors.map((monitor) => {
+//     const { MonitorGuid, Name, MonitorChecks } = monitor;
+
+//     // Sort checks by Timestamp (descending)
+//     const sortedChecks = MonitorChecks.sort((a, b) => {
+//       return new Date(b.Attributes.Timestamp) - new Date(a.Attributes.Timestamp);
+//     });
+
+//     return {
+//       MonitorGuid,
+//       Name,
+//       MostRecentCheck: sortedChecks[0], // Most recent check is now the first
+//     };
+//   });
+// }

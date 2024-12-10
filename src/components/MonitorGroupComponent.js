@@ -41,7 +41,7 @@
 // };
 
 // export default MonitorGroupComponent;
-import { useApplicationData } from '@/hooks/useApplicationData';
+import { useApplicationData } from '../hooks/useApplicationData';
 
 export default function MonitorGroups() {
   const { monitorGroups, monitors, loading } = useApplicationData();

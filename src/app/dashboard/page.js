@@ -4,19 +4,22 @@
 import React, { useState } from 'react';
 import GroupStatus from '../../components/GroupStatus';
 import GroupStatus2 from '../../components/GroupStatus2';
-import MonitorGroups from '../../components/MonitorGroups';
-import MonitorDashboard from '../../components/MonitorDashboard';
+
 import MonitorDetails from '../../components/MonitorDetails';
+import MonitorGroups from '../../components/MonitorGroupDetails';
+import MonitorStatus from '../../components/MonitorStatus';
+import MonitorChecks from '../../components/MonitorChecks';
 
 const Dashboard = () => {
   const [monitorGroupGuid, setmonitorGroupGuid] = useState('monitorGroupGuid');
 
   return (
     <div>
-      <h1>Dashboard</h1>
       {/* <GroupStatus /> */}
       <GroupStatus2 />
+      <MonitorChecks />
       <MonitorDetails />
+      <MonitorGroups/>
       {/* <MonitorGroups />
       <MonitorDashboard/> */}
     </div>
