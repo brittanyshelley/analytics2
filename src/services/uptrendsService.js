@@ -346,58 +346,19 @@ export function getMostRecentChecks(monitors) {
   });
 }
 
-
-// console.log(recentChecks);
-// const recentChecks = getMostRecentChecks(monitors);
-
-
-
-// If you prefer the sort method (slightly less efficient for large datasets):
-
-
-
-// function getMostRecentChecks(monitorGuid) {
-//   const mostRecentChecks = monitors.map((monitor) => {
-//     const { MonitorGuid, Name, MonitorChecks } = monitor;
-
-//     // Find the most recent check by comparing timestamps
-//     const mostRecentCheck = MonitorChecks.reduce((latest, current) => {
-//       return new Date(current.Attributes.Timestamp) > new Date(latest.Attributes.Timestamp)
-//         ? current
-//         : latest;
-//     });
-
-//     return {
-//       MonitorGuid,
-//       Name,
-//       MostRecentCheck: mostRecentCheck,
-//     };
-//   });
-
-//   return mostRecentChecks;
-// }
-
-// // Call the function
-// const recentChecks = getMostRecentChecks(monitorGuid);
-
-// // Output the result
-// console.log(recentChecks);
-
-
-//sorting instead of reduce, you can sort the MonitorChecks array and take the first element
-// function getMostRecentChecks(monitors) {
-//   return monitors.map((monitor) => {
-//     const { MonitorGuid, Name, MonitorChecks } = monitor;
-
-//     // Sort checks by Timestamp (descending)
-//     const sortedChecks = MonitorChecks.sort((a, b) => {
-//       return new Date(b.Attributes.Timestamp) - new Date(a.Attributes.Timestamp);
-//     });
-
-//     return {
-//       MonitorGuid,
-//       Name,
-//       MostRecentCheck: sortedChecks[0], // Most recent check is now the first
-//     };
-//   });
-// }
+// Fetch monitor group status with skip and take
+export const fetchMonitorGroupStatus = async (monitorGroupGuid, skip = 0, take = 10000) => {
+  if (!monitorGroupGuid) {
+    throw new Error('monitorGroupGuid is required.');
+  }
+  try {
+    const response = await apiClient.get(`/Status/MonitorGroup/${monitorGroupGuid}`, {
+      params: { skip, take }
+    });
+    console.log(`Fetched monitor group status for group ${monitorGroupGuid}:`, response.data);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching monitor group status for group ${monitorGroupGuid}:`, error.message);
+    throw error;
+  }
+};
