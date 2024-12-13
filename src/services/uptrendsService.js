@@ -346,6 +346,23 @@ export function getMostRecentChecks(monitors) {
   });
 }
 
+// Fetch monitor group status with skip and take
+export const fetchMonitorGroupStatus = async (monitorGroupGuid, skip = 0, take = 10000) => {
+  if (!monitorGroupGuid) {
+    throw new Error('monitorGroupGuid is required.');
+  }
+  try {
+    const response = await apiClient.get(`/Status/MonitorGroup/${monitorGroupGuid}`, {
+      params: { skip, take }
+    });
+    console.log(`Fetched monitor group status for group ${monitorGroupGuid}:`, response.data);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching monitor group status for group ${monitorGroupGuid}:`, error.message);
+    throw error;
+  }
+};
+
 
 // console.log(recentChecks);
 // const recentChecks = getMostRecentChecks(monitors);

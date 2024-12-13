@@ -1,87 +1,3 @@
-
-//useApplicationData.js
-
-
-'use client';
-import { useState, useEffect, useContext, createContext } from 'react';
-
-const ApplicationDataContext = createContext();
-
-export function useApplicationDataProvider() {
-  const [monitorGroups, setMonitorGroups] = useState([]);
-  const [monitors, setMonitors] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // New error state
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function fetchApplicationData() {
-      setLoading(true); // Start loading
-      setError(null); // Reset error state
-
-      try {
-        const groupsRes = await fetch('/api/uptrends/monitor-groups');
-        if (!groupsRes.ok) {
-          throw new Error(`Failed to fetch monitor groups: ${groupsRes.status}`);
-        }
-        const groupsData = await groupsRes.json();
-        if (isMounted) setMonitorGroups(groupsData);
-
-        const monitorsByGroup = {};
-        await Promise.all(
-          groupsData.map(async (group) => {
-            const groupGuid = group.MonitorGroupGuid;
-            if (!groupGuid) return;
-
-            const monitorsRes = await fetch(`/api/uptrends/Monitor/MonitorGroup/${groupGuid}`);
-            if (!monitorsRes.ok) {
-              throw new Error(`Failed to fetch monitors for group ${groupGuid}`);
-            }
-            const monitorsData = await monitorsRes.json();
-            monitorsByGroup[groupGuid] = monitorsData;
-          })
-        );
-
-        if (isMounted) setMonitors(monitorsByGroup);
-      } catch (err) {
-        console.error('Error fetching application data:', err);
-        if (isMounted) setError(err.message); // Set error message
-      } finally {
-        if (isMounted) setLoading(false); // Stop loading
-      }
-    }
-
-    fetchApplicationData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  return {
-    monitorGroups,
-    monitors,
-    loading,
-    error, // Provide error state
-  };
-}
-
-export function useApplicationData() {
-  return useContext(ApplicationDataContext);
-}
-
-export function ApplicationDataProvider({ children }) {
-  const value = useApplicationDataProvider();
-  return (
-    <ApplicationDataContext.Provider value={value}>
-      {children}
-    </ApplicationDataContext.Provider>
-  );
-}
-
-
-
 // 'use client';
 // import { useState, useEffect, useContext, createContext } from 'react';
 
@@ -89,9 +5,10 @@ export function ApplicationDataProvider({ children }) {
 // const ApplicationDataContext = createContext();
 
 // export function useApplicationDataProvider() {
-//   const [monitorGroups, setMonitorGroups] = useState([]); // State to store monitor groups
-//   const [monitors, setMonitors] = useState({}); // State to store monitors by group
-//   const [loading, setLoading] = useState(true); // State to track loading status
+//   const [monitorGroups, setMonitorGroups] = useState([]); // State for monitor groups
+//   const [monitors, setMonitors] = useState({}); // State for monitors by group
+//   const [monitorChecks, setMonitorChecks] = useState({}); // State for monitor checks by monitor GUID
+//   const [loading, setLoading] = useState(true); // Loading state
 
 //   useEffect(() => {
 //     let isMounted = true; // To prevent state updates on unmounted components
@@ -110,6 +27,7 @@ export function ApplicationDataProvider({ children }) {
 
 //         // Fetch monitors for each group
 //         const monitorsByGroup = {};
+//         const monitorChecksByMonitorGuid = {};
 //         await Promise.all(
 //           groupsData.map(async (group) => {
 //             const groupGuid = group.MonitorGroupGuid;
@@ -125,11 +43,31 @@ export function ApplicationDataProvider({ children }) {
 //             const monitorsData = await monitorsRes.json();
 //             console.log(`Monitors for Group ${groupGuid}:`, monitorsData);
 //             monitorsByGroup[groupGuid] = monitorsData;
+
+//             // Fetch monitor checks for each monitor
+//             await Promise.all(
+//               monitorsData.map(async (monitor) => {
+//                 const monitorGuid = monitor.MonitorGuid;
+//                 if (!monitorGuid) {
+//                   console.error('MonitorGuid is missing');
+//                   return;
+//                 }
+
+//                 const checksRes = await fetch(`/api/uptrends/MonitorChecks/Monitor/${monitorGuid}?Sorting=Descending&Take=1&PresetPeriod=Last24Hours`);
+//                 if (!checksRes.ok) {
+//                   throw new Error(`Failed to fetch checks for monitor ${monitorGuid}`);
+//                 }
+//                 const checksData = await checksRes.json();
+//                 console.log(`Checks for Monitor ${monitorGuid}:`, checksData);
+//                 monitorChecksByMonitorGuid[monitorGuid] = checksData;
+//               })
+//             );
 //           })
 //         );
 
 //         if (isMounted) {
 //           setMonitors(monitorsByGroup); // Update monitors state
+//           setMonitorChecks(monitorChecksByMonitorGuid); // Update monitor checks state
 //           setLoading(false); // Set loading to false
 //         }
 //       } catch (error) {
@@ -147,12 +85,24 @@ export function ApplicationDataProvider({ children }) {
 
 //   console.log('monitorGroups:', monitorGroups);
 //   console.log('monitors:', monitors);
+//   console.log('monitorChecks:', monitorChecks);
 //   console.log('loading:', loading);
+
+//   // Functions to allow manual setting/updating of state
+//   const updateMonitorGroups = (newGroups) => setMonitorGroups(newGroups);
+//   const updateMonitorsByGroup = (groupGuid, newMonitors) =>
+//     setMonitors((prev) => ({ ...prev, [groupGuid]: newMonitors }));
+//   const updateMonitorChecks = (monitorGuid, newChecks) =>
+//     setMonitorChecks((prev) => ({ ...prev, [monitorGuid]: newChecks }));
 
 //   return {
 //     monitorGroups,
 //     monitors,
+//     monitorChecks,
 //     loading,
+//     updateMonitorGroups,
+//     updateMonitorsByGroup,
+//     updateMonitorChecks,
 //   };
 // }
 
@@ -171,116 +121,141 @@ export function ApplicationDataProvider({ children }) {
 //   );
 // }
 
+'use client';
+import { useState, useEffect, useContext, createContext } from 'react';
 
+// Create a context
+const ApplicationDataContext = createContext();
 
-// 'use client';
-// import { useState, useEffect, useContext, createContext } from 'react';
+export function useApplicationDataProvider() {
+  const [monitorGroups, setMonitorGroups] = useState([]); // State for monitor groups
+  const [monitors, setMonitors] = useState({}); // State for monitors by group
+  // const [monitorChecks, setMonitorChecks] = useState({}); // State for monitor checks by monitor GUID
+  const [groupStatuses, setGroupStatuses] = useState({}); // State for group statuses
+  const [loading, setLoading] = useState(true); // Loading state
 
-// // Create a context
-// const ApplicationDataContext = createContext();
+  useEffect(() => {
+    let isMounted = true; // To prevent state updates on unmounted components
 
-// export function useApplicationDataProvider() {
-//   const [monitorGroups, setMonitorGroups] = useState([]); // State to store monitor groups
-//   const [monitors, setMonitors] = useState({}); // State to store monitors by group
-//   const [loading, setLoading] = useState(true); // State to track loading status
+    async function fetchApplicationData() {
+      try {
+        // Fetch monitor groups
+        const groupsRes = await fetch('/api/uptrends/monitor-groups');
+        if (!groupsRes.ok) {
+          throw new Error(`Failed to fetch monitor groups: ${groupsRes.status}`);
+        }
+        const groupsData = await groupsRes.json();
+        console.log('Monitor Groups Data:', groupsData);
 
-//   // Fetch data (example: fetch monitor groups and monitors)
-//   useEffect(() => {
-//     let isMounted = true; // To prevent state updates on unmounted components
+        if (isMounted) setMonitorGroups(groupsData); // Update state only if mounted
 
-//     async function fetchApplicationData() {
-//       try {
-//         // Step 1: Fetch monitor groups
-//         const groupsRes = await fetch('/api/uptrends/monitor-groups');
-//         if (!groupsRes.ok) {
-//           throw new Error(`Failed to fetch monitor groups: ${groupsRes.status}`);
-//         }
-//         const groupsData = await groupsRes.json();
-//         console.log('Monitor Groups Data:', groupsData);
+        // Fetch monitors and statuses for each group
+        const monitorsByGroup = {};
+        // const monitorChecksByMonitorGuid = {};
+        const statusesByGroup = {};
+        await Promise.all(
+          groupsData.map(async (group) => {
+            const groupGuid = group.MonitorGroupGuid;
+            if (!groupGuid) {
+              console.error('MonitorGroupGuid is missing');
+              return;
+            }
 
-//         if (isMounted) setMonitorGroups(groupsData); // Update state only if mounted
+            const monitorsRes = await fetch(`/api/uptrends/Monitor/MonitorGroup/${groupGuid}`);
+            if (!monitorsRes.ok) {
+              throw new Error(`Failed to fetch monitors for group ${groupGuid}`);
+            }
+            const monitorsData = await monitorsRes.json();
+            console.log(`Monitors for Group ${groupGuid}:`, monitorsData);
+            monitorsByGroup[groupGuid] = monitorsData;
 
-//         // Step 2: Fetch MonitorGuids for each group
-//         const monitorsData = await Promise.all(
-//           groupsData.map(async (group) => {
-//             if (!group.MonitorGroupGuid) {
-//               throw new Error('MonitorGroupGuid is missing');
-//             }
+            // Fetch monitor checks for each monitor
+            // await Promise.all(
+            //   monitorsData.map(async (monitor) => {
+            //     const monitorGuid = monitor.MonitorGuid;
+            //     if (!monitorGuid) {
+            //       console.error('MonitorGuid is missing');
+            //       return;
+            //     }
 
-//             const memberRes = await fetch(
-//               `/api/uptrends/monitor-groups/${group.MonitorGroupGuid}/Member`
-//             );
-//             if (!memberRes.ok) {
-//               throw new Error(`Failed to fetch members for group ${group.MonitorGroupGuid}`);
-//             }
-//             const memberData = await memberRes.json();
-//             console.log(`Member Data for Group ${group.MonitorGroupGuid}:`, memberData);
+            //     const checksRes = await fetch(`/api/uptrends/MonitorChecks/Monitor/${monitorGuid}?Sorting=Descending&Take=1&PresetPeriod=Last24Hours`);
+            //     if (!checksRes.ok) {
+            //       throw new Error(`Failed to fetch checks for monitor ${monitorGuid}`);
+            //     }
+            //     const checksData = await checksRes.json();
+            //     console.log(`Checks for Monitor ${monitorGuid}:`, checksData);
+            //     monitorChecksByMonitorGuid[monitorGuid] = checksData;
+            //   })
+            // );
 
-//             // Fetch monitors for each MonitorGuid
-//             const monitors = await Promise.all(
-//               memberData.map(async (member) => {
-//                 const res = await fetch(`/api/uptrends/Monitor/${member.MonitorGuid}`);
-//                 if (!res.ok) {
-//                   throw new Error(`Failed to fetch monitor ${member.MonitorGuid}`);
-//                 }
-//                 const monitorData = await res.json();
-//                 console.log(`Monitor Data for MonitorGuid ${member.MonitorGuid}:`, monitorData);
-//                 return monitorData;
-//               })
-//             );
+            // Fetch group statuses
+            const statusRes = await fetch(`api/uptrends/GroupStatus?monitorGroupGuid=${groupGuid}&skip=0&take=10000`);
+            if (!statusRes.ok) {
+              throw new Error(`Failed to fetch statuses for group ${groupGuid}`);
+            }
+            const statusData = await statusRes.json();
+            statusesByGroup[groupGuid] = statusData;
+          })
+        );
 
-//             return monitors;
-//           })
-//         );
+        if (isMounted) {
+          setMonitors(monitorsByGroup); // Update monitors state
+          // setMonitorChecks(monitorChecksByMonitorGuid); // Update monitor checks state
+          setGroupStatuses(statusesByGroup); // Update group statuses state
+          setLoading(false); // Set loading to false
+        }
+      } catch (error) {
+        console.error('Error fetching application data:', error);
+        if (isMounted) setLoading(false); // Set loading to false on error
+      }
+    }
 
-//         // Step 3: Organize monitors by group
-//         const monitorsByGroup = monitorsData.reduce((acc, monitors, idx) => {
-//           acc[groupsData[idx].MonitorGroupGuid] = monitors;
-//           return acc;
-//         }, {});
-//         console.log('Monitors by Group:', monitorsByGroup);
+    fetchApplicationData();
 
-//         if (isMounted) {
-//           setMonitors(monitorsByGroup); // Update state only if mounted
-//           setLoading(false); // Set loading to false
-//         }
-//       } catch (error) {
-//         console.error('Error fetching application data:', error);
-//         if (isMounted) setLoading(false); // Set loading to false on error
-//       }
-//     }
+    return () => {
+      isMounted = false; // Cleanup function to prevent state updates on unmounted components
+    };
+  }, []);
 
-//     fetchApplicationData();
+  console.log('monitorGroups:', monitorGroups);
+  console.log('monitors:', monitors);
+  // console.log('monitorChecks:', monitorChecks);
+  console.log('groupStatuses:', groupStatuses);
+  console.log('loading:', loading);
 
-//     return () => {
-//       isMounted = false; // Cleanup function to prevent state updates on unmounted components
-//     };
-//   }, []);
+  // Functions to allow manual setting/updating of state
+  const updateMonitorGroups = (newGroups) => setMonitorGroups(newGroups);
+  const updateMonitorsByGroup = (groupGuid, newMonitors) =>
+    setMonitors((prev) => ({ ...prev, [groupGuid]: newMonitors }));
+  // const updateMonitorChecks = (monitorGuid, newChecks) =>
+  //   setMonitorChecks((prev) => ({ ...prev, [monitorGuid]: newChecks }));
+  const updateGroupStatuses = (groupGuid, newStatus) =>
+    setGroupStatuses((prev) => ({ ...prev, [groupGuid]: newStatus }));
 
-//   console.log('monitorGroups:', monitorGroups);
-//   console.log('monitors:', monitors);
-//   console.log('loading:', loading);
+  return {
+    monitorGroups,
+    monitors,
+    // monitorChecks,
+    groupStatuses,
+    loading,
+    updateMonitorGroups,
+    updateMonitorsByGroup,
+    // updateMonitorChecks,
+    updateGroupStatuses,
+  };
+}
 
-//   return {
-//     monitorGroups, // Return monitorGroups state
-//     monitors, // Return monitors state
-//     loading, // Return loading state
-//   };
-// }
+// Custom hook to consume the context
+export function useApplicationData() {
+  return useContext(ApplicationDataContext);
+}
 
-// // Custom hook to consume the context
-// export function useApplicationData() {
-//   return useContext(ApplicationDataContext); // Use the ApplicationDataContext and return its value
-// }
-
-// // Context provider
-// export function ApplicationDataProvider({ children }) {
-//   const value = useApplicationDataProvider(); // Get the value from useApplicationDataProvider
-//   return (
-//     <ApplicationDataContext.Provider value={value}>
-//       {children}
-//     </ApplicationDataContext.Provider>
-//   );
-// }
-
-
+// Context provider
+export function ApplicationDataProvider({ children }) {
+  const value = useApplicationDataProvider();
+  return (
+    <ApplicationDataContext.Provider value={value}>
+      {children}
+    </ApplicationDataContext.Provider>
+  );
+}

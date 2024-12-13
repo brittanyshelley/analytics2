@@ -77,40 +77,35 @@ export default function Dashboard() {
   const {
     monitorGroups,
     monitors,
-    monitorChecks,
+    // monitorChecks,
+    groupStatuses,
     loading,
     updateMonitorGroups,
     updateMonitorsByGroup,
-    updateMonitorChecks,
+    // updateMonitorChecks,
+    updateGroupStatuses,
   } = useApplicationData();
 
   if (loading) return <p>Loading...</p>;
 
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      {/* Display Monitor Groups */}
-      <h2>Monitor Groups</h2>
-      <ul>
-        {monitorGroups.map((group) => (
-          <li key={group.MonitorGroupGuid}>{group.Name}</li>
-        ))}
-      </ul>
 
-      {/* Display Monitors and Checks */}
-      <h2>Monitors</h2>
-      {Object.entries(monitors).map(([groupGuid, monitors]) => (
-        <div key={groupGuid}>
-          <h3>Group: {groupGuid}</h3>
+
+
+  
+  return (
+    <div className="space-y-4">
+      {monitorGroups.map((group) => (
+        <div key={group.MonitorGroupGuid}>
+          <h2>{group.Description}</h2>
+          {/* Add console log for group status */}
+          {console.log('Group Status:', groupStatuses[group.MonitorGroupGuid]?.Data[0]?.Attributes?.ErrorDescription)}
+          <p>Status: {groupStatuses[group.MonitorGroupGuid]?.Data[0]?.Attributes?.ErrorDescription}</p>
           <ul>
-            {monitors.map((monitor) => (
+            {monitors[group.MonitorGroupGuid]?.map((monitor) => (
               <li key={monitor.MonitorGuid}>
+                {/* Add console log for monitor name */}
+                {console.log('Monitor Name:', monitor.Name)}
                 {monitor.Name}
-                <ul>
-                  {monitorChecks[monitor.MonitorGuid]?.map((check) => (
-                    <li key={check.CheckId}>{check.Description}</li>
-                  )) || <li>No checks available</li>}
-                </ul>
               </li>
             ))}
           </ul>
