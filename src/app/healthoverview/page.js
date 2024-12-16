@@ -120,47 +120,90 @@
 //   );
 // }
 
+// 'use client';
+// import { useApplicationData } from '../../hooks/useApplicationData';
+
+// export default function Dashboard() {
+//   const {
+//     monitorGroups,
+//     monitors,
+//     // monitorChecks,
+//     groupStatuses,
+//     loading,
+//     updateMonitorGroups,
+//     updateMonitorsByGroup,
+//     // updateMonitorChecks,
+//     updateGroupStatuses,
+//   } = useApplicationData();
+
+//   if (loading) return <p>Loading...</p>;
+
+
+
+
+
+//   return (
+//     <div className="space-y-4">
+//       {monitorGroups.map((group) => (
+//         <div key={group.MonitorGroupGuid}>
+//           <h2>{group.Description}</h2>
+//           {/* Add console log for group status */}
+//           {console.log('Group Status:', groupStatuses[group.MonitorGroupGuid]?.Data[0]?.Attributes?.ErrorDescription)}
+//           <p>Status: {groupStatuses[group.MonitorGroupGuid]?.Data[0]?.Attributes?.ErrorDescription}</p>
+//           <ul>
+//             {monitors[group.MonitorGroupGuid]?.map((monitor) => (
+//               <li key={monitor.MonitorGuid}>
+//                 {/* Add console log for monitor name */}
+//                 {console.log('Monitor Name:', monitor.Name)}
+//                 {monitor.Name}
+//               </li>
+//             ))}
+//           </ul>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
+
+
 'use client';
 import { useApplicationData } from '../../hooks/useApplicationData';
+import { evaluateGroupStatuses } from '../../utils/checkGroupStatuses';
 
 export default function Dashboard() {
   const {
     monitorGroups,
     monitors,
-    // monitorChecks,
     groupStatuses,
     loading,
-    updateMonitorGroups,
-    updateMonitorsByGroup,
-    // updateMonitorChecks,
-    updateGroupStatuses,
   } = useApplicationData();
 
+  // Show loading message while data is being fetched
   if (loading) return <p>Loading...</p>;
 
+  // Evaluate statuses for all groups
+  const groupStatusIcons = evaluateGroupStatuses(groupStatuses);
 
-
-
-  
   return (
     <div className="space-y-4">
-      {monitorGroups.map((group) => (
-        <div key={group.MonitorGroupGuid}>
-          <h2>{group.Description}</h2>
-          {/* Add console log for group status */}
-          {console.log('Group Status:', groupStatuses[group.MonitorGroupGuid]?.Data[0]?.Attributes?.ErrorDescription)}
-          <p>Status: {groupStatuses[group.MonitorGroupGuid]?.Data[0]?.Attributes?.ErrorDescription}</p>
-          <ul>
-            {monitors[group.MonitorGroupGuid]?.map((monitor) => (
-              <li key={monitor.MonitorGuid}>
-                {/* Add console log for monitor name */}
-                {console.log('Monitor Name:', monitor.Name)}
-                {monitor.Name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      {monitorGroups.map((group) => {
+        const groupId = group.MonitorGroupGuid;
+        const groupStatus = groupStatusIcons[groupId]; // Get ✅ or ❌
+
+        return (
+          <div key={groupId}>
+            <h2>{group.Description}</h2>
+            <p>Status: {groupStatus}</p> {/* Display ✅ or ❌ */}
+            <ul>
+              {monitors[groupId]?.map((monitor) => (
+                <li key={monitor.MonitorGuid}>
+                  {monitor.Name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
     </div>
   );
 }
