@@ -83,7 +83,7 @@ export default function MonitorDetails() {
       <h2 className="text-3xl font-semibold text-secondary mb-4">Monitor Checks (Last 24 Hours)</h2>
       {monitorChecks.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="table table-zebra w-full">
+          <table className="table table-zebra table-auto w-full">
             <thead>
               <tr className="text-primary">
                 <th>Timestamp</th>

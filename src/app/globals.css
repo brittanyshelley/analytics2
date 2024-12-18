@@ -144,131 +144,73 @@ p {
 @tailwind components;
 @tailwind utilities;
 
-/* Define root variables for fallback styling */
-:root {
-  --font-primary-sans: "Open Sans", Arial, sans-serif;
-  --font-primary-serif: "PT Serif", "Times New Roman", serif;
-
-  --color-primary: #005087; /* Pantone 2945 */
-  --color-secondary: #193A5A; /* Pantone 2955 */
-  --color-accent: #0081BC; /* Process Blue */
-  --color-neutral: #3d4451; /* Neutral color */
-  --color-background: #ffffff; /* Light mode background */
-  --color-text: #000000; /* Light mode text */
-}
-
-/* Dark mode fallback */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #121212; /* Dark mode background */
-    --color-text: #ffffff; /* Dark mode text */
-    --color-neutral: #1c1c1c; /* Dark neutral */
-  }
-}
-
-/* Apply global font styles */
+/* Global Font Styling */
 body {
-  font-family: var(--font-primary-sans);
-  color: var(--color-text);
-  background-color: var(--color-background);
+  @apply font-sans text-base-content bg-base-100 leading-relaxed;
   margin: 0;
   padding: 0;
-  line-height: 1.6;
 }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-primary-sans);
-  font-weight: 700; /* Bold for emphasis */
+  @apply font-sans font-bold text-secondary;
   margin: 0;
 }
 
 /* Paragraphs */
 p {
-  font-family: var(--font-primary-serif);
+  @apply font-serif text-base-content;
   margin: 0;
 }
 
 /* Links */
 a {
-  color: var(--color-accent);
-  text-decoration: none;
-  transition: color 0.2s ease;
+  @apply text-accent transition-colors duration-200;
 }
 a:hover {
-  color: var(--color-primary);
+  @apply text-primary;
 }
 
 /* Buttons */
 button {
-  font-family: var(--font-primary-sans);
-  background-color: var(--color-secondary);
-  color: var(--color-background);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: var(--color-primary);
+  @apply bg-secondary text-base-100 px-4 py-2 rounded-md transition-colors duration-300 hover:bg-primary;
 }
 
 /* Cards */
 .card {
-  border: 1px solid var(--color-neutral);
-  border-radius: 8px;
-  padding: 16px;
-  margin: 16px;
-  background-color: var(--color-background);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  @apply border border-neutral rounded-lg p-6 bg-base-100 shadow-md hover:shadow-lg transition-transform duration-300 hover:translate-y-[-5px];
 }
 
 .card h2 {
-  font-size: 1.5rem;
-  margin-bottom: 8px;
+  @apply text-xl font-semibold text-secondary mb-2;
 }
 
 .card p {
-  font-size: 1rem;
-  margin-bottom: 8px;
+  @apply text-base mb-2;
 }
 
 .card ul {
-  list-style-type: none;
-  padding: 0;
+  @apply list-none p-0;
 }
 
 .card ul li {
-  margin-bottom: 4px;
+  @apply mb-1;
 }
 
-/* Utility Classes for Spacing */
+/* Utility Classes for Layout */
 .dashboard {
-  padding: 2rem;
+  @apply p-8;
 }
 
 .data-section {
-  margin-top: 1.5rem;
+  @apply mt-6;
 }
 
 /* Logo Styling */
 .logo {
-  width: 72px;
-  height: auto;
-  margin: 10px;
+  @apply w-20 h-auto m-4;
 }
 
 .logo-container {
-  padding: 20px; /* Clear space */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @apply flex justify-center items-center p-6;
 }
