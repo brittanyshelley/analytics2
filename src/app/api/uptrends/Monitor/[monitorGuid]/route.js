@@ -171,7 +171,7 @@ export async function GET(req, { params }) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error(`Error fetching monitor details for GUID ${params?.monitorGuid || 'unknown'}:`, error.message);
+    console.error(`Error fetching monitor details for GUID ${monitorGuid || 'unknown'}:`, error.message);
 
     return new Response(
       JSON.stringify({ error: 'Failed to fetch monitor details' }),

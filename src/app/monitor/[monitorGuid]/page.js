@@ -1,4 +1,4 @@
-// pages/monitor/[monitorGuid]/page.js
+// app/monitor/[monitorGuid]/page.js
 
 'use client';
 

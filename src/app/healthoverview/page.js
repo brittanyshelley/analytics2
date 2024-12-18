@@ -407,42 +407,317 @@
 //   );
 // }
 
+// 'use client';
+// import Link from 'next/link';
+// import { useApplicationData } from '../../hooks/useApplicationData';
+// import { evaluateGroupStatuses } from '../../utils/checkGroupStatuses';
+
+// export default function Dashboard() {
+//   const {
+//     monitorGroups,
+//     groupStatuses,
+//     loading,
+//   } = useApplicationData();
+
+//   if (loading) return <p className="text-center text-lg font-bold text-primary">Loading...</p>;
+
+//   const groupStatusIcons = evaluateGroupStatuses(groupStatuses);
+
+//   return (
+//     <div className="container mx-auto py-8 space-y-8">
+//       {/* Header */}
+//       <header className="text-center">
+//         <h1 className="text-4xl font-bold text-primary mb-4">Dashboard Status</h1>
+//         <p className="text-base-content">Current status of all monitor groups</p>
+//       </header>
+
+//       {/* Monitor Groups */}
+//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//         {monitorGroups.map((group) => {
+//           const groupId = group.MonitorGroupGuid;
+//           const groupData = groupStatuses[groupId]?.Data || [];
+//           const errorMonitors = groupData.filter(
+//             (monitor) => monitor.Attributes.ErrorLevel !== 'NoError'
+//           );
+
+//           const groupStatus = groupStatusIcons[groupId];
+//           const statusBadge =
+//             groupStatus === '✅' ? 'text-green-500' : 'text-red-500';
+
+//           return (
+//             <div
+//               key={groupId}
+//               className="card bg-base-100 shadow-md hover:shadow-lg transition duration-300"
+//             >
+//               <div className="card-body">
+//                 {/* Group Title */}
+//                 <h2 className="card-title text-secondary">{group.Description}</h2>
+
+//                 {/* Group Status */}
+//                 <div className="mb-4">
+//                   <span className={statusBadge}>{groupStatus}</span>
+//                 </div>
+
+//                 {/* Error Monitors */}
+//                 {errorMonitors.length > 0 ? (
+//                   <ul className="list-disc list-inside space-y-2">
+//                     {errorMonitors.map((monitor) => (
+//                       <li key={monitor.Id} className="text-error">
+//                         <Link
+//                           href={`/monitor/${monitor.Attributes.MonitorGuid}`}
+//                           className="link link-hover"
+//                         >
+//                           {monitor.Attributes.CheckpointName}: {monitor.Attributes.ErrorDescription}
+//                         </Link>
+//                       </li>
+//                     ))}
+//                   </ul>
+//                 ) : (
+//                   <p className="text-success">All monitors operational</p>
+//                 )}
+//               </div>
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+// 'use client';
+
+// import Link from 'next/link';
+// import { useApplicationData } from '../../hooks/useApplicationData';
+// import { evaluateGroupStatuses } from '../../utils/checkGroupStatuses';
+
+// export default function Dashboard() {
+//   const {
+//     monitorGroups,
+//     groupStatuses,
+//     loading,
+//   } = useApplicationData();
+
+//   console.log('Loading state:', loading);
+//   console.log('Monitor Groups:', monitorGroups);
+//   console.log('Group Statuses:', groupStatuses);
+
+//   if (loading) {
+//     console.log('Dashboard is in loading state.');
+//     return <p className="text-center text-lg font-bold text-primary">Loading...</p>;
+//   }
+
+//   const groupStatusIcons = evaluateGroupStatuses(groupStatuses);
+//   console.log('Evaluated Group Status Icons:', groupStatusIcons);
+
+//   return (
+//     <div className="container mx-auto py-8 space-y-8">
+//       {/* Header */}
+//       <header className="text-center">
+//         <h1 className="text-4xl font-bold text-primary mb-4">Dashboard Status</h1>
+//         <p className="text-base-content">Current status of all monitor groups</p>
+//       </header>
+
+//       {/* Monitor Groups */}
+//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//         {monitorGroups.map((group) => {
+//           const groupId = group?.MonitorGroupGuid;
+//           console.log(`Processing Group ID: ${groupId}`, group);
+
+//           const groupData = groupStatuses?.[groupId]?.Data || [];
+//           console.log(`Group Data for ${groupId}:`, groupData);
+
+//           const errorMonitors = groupData.filter(
+//             (monitor) => monitor?.Attributes?.ErrorLevel !== 'NoError'
+//           );
+//           console.log(`Error Monitors for ${groupId}:`, errorMonitors);
+
+//           const groupStatus = groupStatusIcons[groupId] || '❓';
+//           const statusBadge =
+//             groupStatus === '✅' ? 'text-green-500' : 'text-red-500';
+
+//           return (
+//             <div
+//               key={groupId || Math.random()}
+//               className="card bg-base-100 shadow-md hover:shadow-lg transition duration-300"
+//             >
+//               <div className="card-body">
+//                 {/* Group Title */}
+//                 <h2 className="card-title text-secondary">{group?.Description || 'No Description'}</h2>
+
+//                 {/* Group Status */}
+//                 <div className="mb-4">
+//                   <span className={statusBadge}>{groupStatus}</span>
+//                 </div>
+
+//                 {/* Error Monitors */}
+//                 {errorMonitors.length > 0 ? (
+//                   <ul className="list-disc list-inside space-y-2">
+//                     {errorMonitors.map((monitor) => (
+//                       <li key={monitor?.Id || Math.random()} className="text-error">
+//                         <Link
+//                           href={`/monitor/${monitor?.Attributes?.MonitorGuid}`}
+//                           className="link link-hover"
+//                         >
+//                           {monitor?.Attributes?.CheckpointName || 'Unknown'}:{" "}
+//                           {monitor?.Attributes?.ErrorDescription || 'No details'}
+//                         </Link>
+//                       </li>
+//                     ))}
+//                   </ul>
+//                 ) : (
+//                   <p className="text-success">All monitors operational</p>
+//                 )}
+//               </div>
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+// // 'use client';
+
+// import Link from 'next/link';
+// import React, { useState, useEffect } from 'react';
+// import { useParams } from 'next/navigation';
+// import { useApplicationData } from '../../hooks/useApplicationData';
+// import { evaluateGroupStatuses } from '../../utils/checkGroupStatuses';
+
+// export default function Dashboard() {
+//   const params = useParams(); // Access route params dynamically
+//   const { monitorGroups, groupStatuses, loading } = useApplicationData();
+
+//   const [dynamicGroupStatuses, setDynamicGroupStatuses] = useState(null);
+
+//   useEffect(() => {
+//     if (params) {
+//       console.log('Params:', params); // Debug route params
+//       setDynamicGroupStatuses(groupStatuses); // Set dynamically after params are unwrapped
+//     }
+//   }, [params, groupStatuses]);
+
+//   if (loading) {
+//     console.log('Dashboard is loading...');
+//     return <p className="text-center text-lg font-bold text-primary">Loading...</p>;
+//   }
+
+//   if (!monitorGroups || monitorGroups.length === 0) {
+//     console.log('No monitor groups available.');
+//     return <p className="text-center text-error">No monitor groups available.</p>;
+//   }
+
+//   const groupStatusIcons = evaluateGroupStatuses(dynamicGroupStatuses || {});
+
+//   return (
+//     <div className="container mx-auto py-8 space-y-8">
+//       {/* Header */}
+//       <header className="text-center">
+//         <h1 className="text-4xl font-bold text-primary mb-4">Dashboard Status</h1>
+//         <p className="text-base-content">Current status of all monitor groups</p>
+//       </header>
+
+//       {/* Monitor Groups */}
+//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//         {monitorGroups.map((group) => {
+//           const groupId = group?.MonitorGroupGuid;
+//           const groupData = groupStatuses?.[groupId]?.Data || [];
+//           const errorMonitors = groupData.filter(
+//             (monitor) => monitor?.Attributes?.ErrorLevel !== 'NoError'
+//           );
+
+//           const groupStatus = groupStatusIcons[groupId] || '❓';
+//           const statusBadge =
+//             groupStatus === '✅' ? 'text-green-500' : 'text-red-500';
+
+//           return (
+//             <div
+//               key={groupId || Math.random()}
+//               className="card bg-base-100 shadow-md hover:shadow-lg transition duration-300"
+//             >
+//               <div className="card-body">
+//                 {/* Group Title */}
+//                 <h2 className="card-title text-secondary">{group?.Description || 'No Description'}</h2>
+
+//                 {/* Group Status */}
+//                 <div className="mb-4">
+//                   <span className={statusBadge}>{groupStatus}</span>
+//                 </div>
+
+//                 {/* Error Monitors */}
+//                 {errorMonitors.length > 0 ? (
+//                   <ul className="list-disc list-inside space-y-2">
+//                     {errorMonitors.map((monitor) => (
+//                       <li key={monitor?.Id || Math.random()} className="text-error">
+//                         <Link
+//                           href={`/monitor/${monitor?.Attributes?.MonitorGuid}`}
+//                           className="link link-hover"
+//                         >
+//                           {monitor?.Attributes?.CheckpointName || 'Unknown'}:{" "}
+//                           {monitor?.Attributes?.ErrorDescription || 'No details'}
+//                         </Link>
+//                       </li>
+//                     ))}
+//                   </ul>
+//                 ) : (
+//                   <p className="text-success">All monitors operational</p>
+//                 )}
+//               </div>
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// }
+
+
 'use client';
-import Link from 'next/link';
 import { useApplicationData } from '../../hooks/useApplicationData';
 import { evaluateGroupStatuses } from '../../utils/checkGroupStatuses';
 
 export default function Dashboard() {
   const {
     monitorGroups,
+    monitors,
     groupStatuses,
     loading,
   } = useApplicationData();
 
-  if (loading) return <p className="text-center text-lg font-bold text-primary">Loading...</p>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
 
+  // Evaluate statuses for all groups
   const groupStatusIcons = evaluateGroupStatuses(groupStatuses);
 
   return (
     <div className="container mx-auto py-8 space-y-8">
-      {/* Header */}
+      {/* Header Section */}
       <header className="text-center">
         <h1 className="text-4xl font-bold text-primary mb-4">Dashboard Status</h1>
         <p className="text-base-content">Current status of all monitor groups</p>
       </header>
 
-      {/* Monitor Groups */}
+      {/* Grid Layout for Groups */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {monitorGroups.map((group) => {
           const groupId = group.MonitorGroupGuid;
           const groupData = groupStatuses[groupId]?.Data || [];
+
+          // Filter monitors with errors
           const errorMonitors = groupData.filter(
             (monitor) => monitor.Attributes.ErrorLevel !== 'NoError'
           );
 
           const groupStatus = groupStatusIcons[groupId];
           const statusBadge =
-            groupStatus === '✅' ? 'text-green-500' : 'text-red-500';
+            groupStatus === '✅' ? 'text-success' : 'text-error';
 
           return (
             <div
@@ -453,22 +728,21 @@ export default function Dashboard() {
                 {/* Group Title */}
                 <h2 className="card-title text-secondary">{group.Description}</h2>
 
-                {/* Group Status */}
+                {/* Status Badge */}
                 <div className="mb-4">
-                  <span className={statusBadge}>{groupStatus}</span>
+                  <span className={`text-2xl font-bold ${statusBadge}`}>
+                    {groupStatus}
+                  </span>
                 </div>
 
-                {/* Error Monitors */}
+                {/* Display Error Monitors */}
                 {errorMonitors.length > 0 ? (
                   <ul className="list-disc list-inside space-y-2">
                     {errorMonitors.map((monitor) => (
-                      <li key={monitor.Id} className="text-error">
-                        <Link
-                          href={`/monitor/${monitor.Attributes.MonitorGuid}`}
-                          className="link link-hover"
-                        >
+                      <li key={monitor.Id}>
+                        <span className="text-error">
                           {monitor.Attributes.CheckpointName}: {monitor.Attributes.ErrorDescription}
-                        </Link>
+                        </span>
                       </li>
                     ))}
                   </ul>
