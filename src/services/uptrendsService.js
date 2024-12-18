@@ -267,8 +267,8 @@ export const fetchMonitorChecks = async (monitorGuid, params = {}) => {
     // Default parameters for the API call
     const defaultParams = {
       Sorting: 'Descending',
-      Take: 1,
-      PresetPeriod: 'Last2Hours',
+      Take: 100,
+      PresetPeriod: 'Last24Hours',
     };
 
     // Merge default parameters with any additional ones provided
