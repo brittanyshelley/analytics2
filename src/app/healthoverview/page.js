@@ -272,40 +272,108 @@
 // }
 
 
+// 'use client';
+// import { useApplicationData } from '../../hooks/useApplicationData';
+// import { evaluateGroupStatuses } from '../../utils/checkGroupStatuses';
+
+// export default function Dashboard() {
+//   const {
+//     monitorGroups,
+//     monitors,
+//     groupStatuses,
+//     loading,
+//   } = useApplicationData();
+
+//   if (loading) return <p className="text-center text-lg font-bold">Loading...</p>;
+
+//   // Evaluate statuses for all groups
+//   const groupStatusIcons = evaluateGroupStatuses(groupStatuses);
+
+//   return (
+//     <div className="container mx-auto py-8 space-y-8">
+//       {/* Header Section */}
+//       <header className="text-center">
+//         <h1 className="text-3xl font-bold mb-4">Dashboard Status</h1>
+//         <p className="text-gray-600">
+//           Current status of all monitor groups
+//         </p>
+//       </header>
+
+//       {/* Grid Layout for Groups */}
+//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//         {monitorGroups.map((group) => {
+//           const groupId = group.MonitorGroupGuid;
+//           const groupData = groupStatuses[groupId]?.Data || [];
+
+//           // Filter monitors with errors
+//           const errorMonitors = groupData.filter(
+//             (monitor) => monitor.Attributes.ErrorLevel !== 'NoError'
+//           );
+
+//           const groupStatus = groupStatusIcons[groupId];
+//           const statusColor = groupStatus === '✅' ? 'text-green-500' : 'text-red-500';
+
+//           return (
+//             <div
+//               key={groupId}
+//               className="border border-gray-200 rounded-lg p-4 shadow-md hover:shadow-lg transition"
+//             >
+//               {/* Group Title */}
+//               <h2 className="text-xl font-semibold mb-2">{group.Description}</h2>
+
+//               {/* Status Indicator */}
+//               <p className={`text-2xl font-bold mb-4 ${statusColor}`}>
+//                 {groupStatus}
+//               </p>
+
+//               {/* Display Error Monitors */}
+//               {errorMonitors.length > 0 ? (
+//                 <ul className="space-y-2">
+//                   {errorMonitors.map((monitor) => (
+//                     <li key={monitor.Id} className="text-red-500">
+//                       {monitor.Attributes.CheckpointName}: {monitor.Attributes.ErrorDescription}
+//                     </li>
+//                   ))}
+//                 </ul>
+//               ) : (
+//                 <p className="text-gray-500">All monitors operational</p>
+//               )}
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// }
+
+
 'use client';
+import Link from 'next/link';
 import { useApplicationData } from '../../hooks/useApplicationData';
 import { evaluateGroupStatuses } from '../../utils/checkGroupStatuses';
 
 export default function Dashboard() {
   const {
     monitorGroups,
-    monitors,
     groupStatuses,
     loading,
   } = useApplicationData();
 
   if (loading) return <p className="text-center text-lg font-bold">Loading...</p>;
 
-  // Evaluate statuses for all groups
   const groupStatusIcons = evaluateGroupStatuses(groupStatuses);
 
   return (
     <div className="container mx-auto py-8 space-y-8">
-      {/* Header Section */}
       <header className="text-center">
         <h1 className="text-3xl font-bold mb-4">Dashboard Status</h1>
-        <p className="text-gray-600">
-          Current status of all monitor groups
-        </p>
+        <p className="text-gray-600">Current status of all monitor groups</p>
       </header>
 
-      {/* Grid Layout for Groups */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {monitorGroups.map((group) => {
           const groupId = group.MonitorGroupGuid;
           const groupData = groupStatuses[groupId]?.Data || [];
-
-          // Filter monitors with errors
           const errorMonitors = groupData.filter(
             (monitor) => monitor.Attributes.ErrorLevel !== 'NoError'
           );
@@ -314,24 +382,17 @@ export default function Dashboard() {
           const statusColor = groupStatus === '✅' ? 'text-green-500' : 'text-red-500';
 
           return (
-            <div
-              key={groupId}
-              className="border border-gray-200 rounded-lg p-4 shadow-md hover:shadow-lg transition"
-            >
-              {/* Group Title */}
+            <div key={groupId} className="border border-gray-200 rounded-lg p-4 shadow-md hover:shadow-lg transition">
               <h2 className="text-xl font-semibold mb-2">{group.Description}</h2>
+              <p className={`text-2xl font-bold mb-4 ${statusColor}`}>{groupStatus}</p>
 
-              {/* Status Indicator */}
-              <p className={`text-2xl font-bold mb-4 ${statusColor}`}>
-                {groupStatus}
-              </p>
-
-              {/* Display Error Monitors */}
               {errorMonitors.length > 0 ? (
                 <ul className="space-y-2">
                   {errorMonitors.map((monitor) => (
                     <li key={monitor.Id} className="text-red-500">
-                      {monitor.Attributes.CheckpointName}: {monitor.Attributes.ErrorDescription}
+                      <Link href={`/monitor/${monitor.Attributes.MonitorGuid}`}>
+                        {monitor.Attributes.CheckpointName}: {monitor.Attributes.ErrorDescription}
+                      </Link>
                     </li>
                   ))}
                 </ul>

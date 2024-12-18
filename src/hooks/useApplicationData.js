@@ -193,7 +193,7 @@ export function useApplicationDataProvider() {
             // );
 
             // Fetch group statuses
-            const statusRes = await fetch(`api/uptrends/GroupStatus?monitorGroupGuid=${groupGuid}&skip=0&take=10000`);
+            const statusRes = await fetch(`/api/uptrends/GroupStatus?monitorGroupGuid=${groupGuid}&skip=0&take=10000`);
             if (!statusRes.ok) {
               throw new Error(`Failed to fetch statuses for group ${groupGuid}`);
             }
