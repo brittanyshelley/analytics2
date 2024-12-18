@@ -1,3 +1,5 @@
+// pages/monitor/[monitorGuid]/page.js
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -40,37 +42,80 @@ export default function MonitorDetails() {
     }
   }, [monitorGuid]);
 
-  if (loading) return <p>Loading monitor details...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <p className="text-center text-lg text-primary">Loading monitor details...</p>;
+  if (error) return <p className="text-center text-error">Error: {error}</p>;
 
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-4">Monitor Details</h1>
+      {/* Monitor Details Section */}
+      <h1 className="text-4xl font-bold text-primary mb-6">Monitor Details</h1>
 
       {monitorDetails && (
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold">{monitorDetails.Name}</h2>
-          <p><strong>Type:</strong> {monitorDetails.MonitorType}</p>
-          <p><strong>URL:</strong> <a href={monitorDetails.Url} target="_blank" rel="noopener noreferrer">{monitorDetails.Url}</a></p>
-          <p><strong>Check Interval:</strong> {monitorDetails.CheckInterval} minutes</p>
+        <div className="card bg-base-200 shadow-lg p-6 mb-8">
+          <div className="card-body">
+            <h2 className="card-title text-accent text-2xl">{monitorDetails.Name}</h2>
+            <p>
+              <strong>Type:</strong> {monitorDetails.MonitorType}
+            </p>
+            <p>
+              <strong>URL:</strong>{' '}
+              {monitorDetails.Url ? (
+                <a
+                  href={monitorDetails.Url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-info underline"
+                >
+                  {monitorDetails.Url}
+                </a>
+              ) : (
+                'N/A'
+              )}
+            </p>
+            <p>
+              <strong>Check Interval:</strong> {monitorDetails.CheckInterval} minutes
+            </p>
+          </div>
         </div>
       )}
 
-      <h2 className="text-xl font-semibold mb-2">Monitor Checks (Last 24 Hours)</h2>
+      {/* Monitor Checks */}
+      <h2 className="text-3xl font-semibold text-secondary mb-4">Monitor Checks (Last 24 Hours)</h2>
       {monitorChecks.length > 0 ? (
-        <ul className="space-y-2">
-          {monitorChecks.map((check) => (
-            <li key={check.Id} className="border p-2 rounded shadow-sm">
-              <p><strong>Timestamp:</strong> {new Date(check.Attributes.Timestamp).toLocaleString()}</p>
-              <p><strong>Status:</strong> {check.Attributes.ErrorLevel}</p>
-              <p><strong>Description:</strong> {check.Attributes.ErrorDescription || 'N/A'}</p>
-              <p><strong>Total Time:</strong> {check.Attributes.TotalTime} ms</p>
-            </li>
-          ))}
-        </ul>
+        <div className="overflow-x-auto">
+          <table className="table table-zebra w-full">
+            <thead>
+              <tr className="text-primary">
+                <th>Timestamp</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Total Time (ms)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {monitorChecks.map((check) => (
+                <tr key={check.Id}>
+                  <td>{new Date(check.Attributes.Timestamp).toLocaleString()}</td>
+                  <td
+                    className={
+                      check.Attributes.ErrorLevel === 'NoError'
+                        ? 'text-success'
+                        : 'text-error'
+                    }
+                  >
+                    {check.Attributes.ErrorLevel}
+                  </td>
+                  <td>{check.Attributes.ErrorDescription || 'N/A'}</td>
+                  <td>{check.Attributes.TotalTime}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <p>No recent monitor checks available.</p>
+        <p className="text-center text-accent">No recent monitor checks available.</p>
       )}
     </div>
   );
 }
+

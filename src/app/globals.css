@@ -1,4 +1,4 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -59,4 +59,216 @@ body {
 
 .card ul li {
   margin-bottom: 4px;
+}
+
+:root {
+  --font-primary-sans: "Open Sans", Arial, sans-serif;
+  --font-primary-serif: "PT Serif", "Times New Roman", serif;
+}
+
+body {
+  font-family: var(--font-primary-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary-sans);
+  font-weight: bold;
+}
+
+p {
+  font-family: var(--font-primary-serif);
+}
+
+:root {
+  --color-primary: #005087;
+  --color-secondary: #193A5A;
+  --color-accent: #0081BC;
+  --color-text: #000000; /* Default text color */
+  /* --color-background: #ffffff;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-accent);
+}
+
+header {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+}
+
+button {
+  background-color: var(--color-secondary);
+  color: var(--color-background);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-family: var(--font-primary-sans);
+  cursor: pointer;
+}
+
+.logo {
+  width: 72px;
+  height: auto;
+  margin: 10px;
+} */
+
+/* .logo-container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+/* Apply the fonts globally */
+/* body {
+  font-family: var(--font-open-sans), Arial, sans-serif;
+  color: var(--tw-color-text);
+  background-color: var(--tw-color-background);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-open-sans), Arial, sans-serif;
+  font-weight: 700;
+}
+
+p {
+  font-family: var(--font-pt-serif), "Times New Roman", serif;
+}  */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Define root variables for fallback styling */
+:root {
+  --font-primary-sans: "Open Sans", Arial, sans-serif;
+  --font-primary-serif: "PT Serif", "Times New Roman", serif;
+
+  --color-primary: #005087; /* Pantone 2945 */
+  --color-secondary: #193A5A; /* Pantone 2955 */
+  --color-accent: #0081BC; /* Process Blue */
+  --color-neutral: #3d4451; /* Neutral color */
+  --color-background: #ffffff; /* Light mode background */
+  --color-text: #000000; /* Light mode text */
+}
+
+/* Dark mode fallback */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #121212; /* Dark mode background */
+    --color-text: #ffffff; /* Dark mode text */
+    --color-neutral: #1c1c1c; /* Dark neutral */
+  }
+}
+
+/* Apply global font styles */
+body {
+  font-family: var(--font-primary-sans);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary-sans);
+  font-weight: 700; /* Bold for emphasis */
+  margin: 0;
+}
+
+/* Paragraphs */
+p {
+  font-family: var(--font-primary-serif);
+  margin: 0;
+}
+
+/* Links */
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover {
+  color: var(--color-primary);
+}
+
+/* Buttons */
+button {
+  font-family: var(--font-primary-sans);
+  background-color: var(--color-secondary);
+  color: var(--color-background);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--color-primary);
+}
+
+/* Cards */
+.card {
+  border: 1px solid var(--color-neutral);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px;
+  background-color: var(--color-background);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.card ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.card ul li {
+  margin-bottom: 4px;
+}
+
+/* Utility Classes for Spacing */
+.dashboard {
+  padding: 2rem;
+}
+
+.data-section {
+  margin-top: 1.5rem;
+}
+
+/* Logo Styling */
+.logo {
+  width: 72px;
+  height: auto;
+  margin: 10px;
+}
+
+.logo-container {
+  padding: 20px; /* Clear space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
