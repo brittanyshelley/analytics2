@@ -362,3 +362,14 @@ export const fetchMonitorGroupStatus = async (monitorGroupGuid, skip = 0, take =
     throw error;
   }
 };
+
+export function getMonitorName(monitorGuid, monitors) {
+  for (const groupGuid in monitors) {
+    const groupMonitors = monitors[groupGuid];
+    const monitor = groupMonitors.find((m) => m.MonitorGuid === monitorGuid);
+    if (monitor) {
+      return monitor.Name;
+    }
+  }
+  return 'Monitor Name Not Found';
+}
