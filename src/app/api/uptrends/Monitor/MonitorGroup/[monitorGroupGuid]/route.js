@@ -1,10 +1,10 @@
-// app/api/Monitor/MonitorGroup/[monitorGroupGuid].js
+// app/api/uptrends/Monitor/MonitorGroup/[monitorGroupGuid].js
 
 import { fetchMonitorGroupMonitors } from '../../../../../../services/uptrendsService';
 
 
 export async function GET(req, { params }) {
-  const { monitorGroupGuid } = params; // Extract the dynamic monitorGroupGuid from params
+  const { monitorGroupGuid } = await params; // Extract the dynamic monitorGroupGuid from params
 
   if (!monitorGroupGuid) {
     return new Response(
